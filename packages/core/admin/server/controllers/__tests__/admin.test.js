@@ -31,6 +31,9 @@ describe('Admin Controller', () => {
             user: {
               exists: jest.fn(() => true),
             },
+            'project-settings': {
+              getProjectSettings: jest.fn(() => ({ menuLogo: null })),
+            },
           },
         },
       };
@@ -40,11 +43,16 @@ describe('Admin Controller', () => {
       const result = await adminController.init();
 
       expect(global.strapi.config.get).toHaveBeenCalledWith('uuid', false);
+      expect(global.strapi.config.get).toHaveBeenCalledWith(
+        'packageJsonStrapi.telemetryDisabled',
+        null
+      );
       expect(global.strapi.admin.services.user.exists).toHaveBeenCalled();
       expect(result.data).toBeDefined();
       expect(result.data).toStrictEqual({
         uuid: 'foo',
         hasAdmin: true,
+        menuLogo: null,
       });
     });
   });
@@ -58,6 +66,10 @@ describe('Admin Controller', () => {
               ({
                 autoReload: undefined,
                 'info.strapi': '1.0.0',
+                'info.dependencies': {
+                  dependency: '1.0.0',
+                },
+                uuid: 'testuuid',
                 environment: 'development',
               }[key] || value)
           ),
@@ -73,14 +85,21 @@ describe('Admin Controller', () => {
         ['environment'],
         ['autoReload', false],
         ['info.strapi', null],
+        ['info.dependencies', {}],
+        ['uuid', null],
       ]);
       expect(result.data).toBeDefined();
       expect(result.data).toStrictEqual({
         currentEnvironment: 'development',
         autoReload: false,
         strapiVersion: '1.0.0',
+        projectId: 'testuuid',
+        dependencies: {
+          dependency: '1.0.0',
+        },
         nodeVersion: process.version,
         communityEdition: false,
+        useYarn: true,
       });
     });
   });

@@ -12,7 +12,7 @@ import { ThemeProvider, lightTheme } from '@strapi/design-system';
 import { IntlProvider } from 'react-intl';
 import { DraftAndPublishBadge } from '../index';
 
-const makeApp = props => (
+const makeApp = (props) => (
   <ThemeProvider theme={lightTheme}>
     <IntlProvider locale="en" messages={{}} defaultLocale="en">
       <DraftAndPublishBadge {...props} />
@@ -45,6 +45,10 @@ describe('<DraftAndPublishBadge />', () => {
       }
 
       .c1 {
+        -webkit-align-items: center;
+        -webkit-box-align: center;
+        -ms-flex-align: center;
+        align-items: center;
         display: -webkit-box;
         display: -webkit-flex;
         display: -ms-flexbox;
@@ -52,23 +56,19 @@ describe('<DraftAndPublishBadge />', () => {
         -webkit-flex-direction: row;
         -ms-flex-direction: row;
         flex-direction: row;
-        -webkit-align-items: center;
-        -webkit-box-align: center;
-        -ms-flex-align: center;
-        align-items: center;
       }
 
       .c4 {
-        color: #2f6846;
         font-size: 0.875rem;
         line-height: 1.43;
+        color: #2f6846;
       }
 
       .c5 {
-        font-weight: 600;
-        color: #2f6846;
         font-size: 0.875rem;
         line-height: 1.43;
+        font-weight: 600;
+        color: #2f6846;
       }
 
       .c2 {
@@ -84,7 +84,7 @@ describe('<DraftAndPublishBadge />', () => {
         class="c0"
       >
         <div
-          class="c1 "
+          class="c1 sc-ehIJor wxhvj"
         >
           <svg
             class="c2"
@@ -145,6 +145,10 @@ describe('<DraftAndPublishBadge />', () => {
       }
 
       .c1 {
+        -webkit-align-items: center;
+        -webkit-box-align: center;
+        -ms-flex-align: center;
+        align-items: center;
         display: -webkit-box;
         display: -webkit-flex;
         display: -ms-flexbox;
@@ -152,23 +156,19 @@ describe('<DraftAndPublishBadge />', () => {
         -webkit-flex-direction: row;
         -ms-flex-direction: row;
         flex-direction: row;
-        -webkit-align-items: center;
-        -webkit-box-align: center;
-        -ms-flex-align: center;
-        align-items: center;
       }
 
       .c4 {
-        color: #006096;
         font-size: 0.875rem;
         line-height: 1.43;
+        color: #006096;
       }
 
       .c5 {
-        font-weight: 600;
-        color: #006096;
         font-size: 0.875rem;
         line-height: 1.43;
+        font-weight: 600;
+        color: #006096;
       }
 
       .c2 {
@@ -184,7 +184,7 @@ describe('<DraftAndPublishBadge />', () => {
         class="c0"
       >
         <div
-          class="c1 "
+          class="c1 sc-ehIJor wxhvj"
         >
           <svg
             class="c2"

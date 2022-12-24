@@ -10,8 +10,8 @@ import { Typography } from '@strapi/design-system/Typography';
 import { Box } from '@strapi/design-system/Box';
 import { Stack } from '@strapi/design-system/Stack';
 import { Grid, GridItem } from '@strapi/design-system/Grid';
-import { LinkButton } from '@strapi/design-system/LinkButton';
-import { Link } from '@strapi/design-system/Link';
+import { LinkButton } from '@strapi/design-system/v2/LinkButton';
+import { Link } from '@strapi/design-system/v2/Link';
 import ExternalLink from '@strapi/icons/ExternalLink';
 import Github from '@strapi/icons/Github';
 import Discord from '@strapi/icons/Discord';
@@ -30,19 +30,16 @@ const StyledReddit = styled(Reddit)`
   > path:first-child {
     fill: #ff4500;
   }
-  > path:last-child {
-    fill: ${({ theme }) => theme.colors.neutral0};
-  }
 `;
 const StyledStrapi = styled(Strapi)`
   > path:first-child {
-    fill: #8e75ff;
+    fill: #4945ff;
   }
   > path:nth-child(2) {
-    fill: #8e75ff;
+    fill: #fff;
   }
-  > path:nth-child(3) {
-    fill: #8e75ff;
+  > path:nth-child(4) {
+    fill: #9593ff;
   }
 `;
 
@@ -82,7 +79,7 @@ const socialLinks = [
   },
   {
     name: 'Discord',
-    link: 'https://slack.strapi.io/',
+    link: 'https://discord.strapi.io/',
     icon: <StyledDiscord />,
     alt: 'discord',
   },
@@ -154,8 +151,8 @@ const SocialLinks = () => {
       shadow="tableShadow"
     >
       <Box paddingBottom={7}>
-        <Stack size={5}>
-          <Stack size={3}>
+        <Stack spacing={5}>
+          <Stack spacing={3}>
             <Typography variant="delta" as="h2" id="join-the-community">
               {formatMessage({
                 id: 'app.components.HomePage.community',
@@ -170,10 +167,7 @@ const SocialLinks = () => {
               })}
             </Typography>
           </Stack>
-          <Link
-            href="https://portal.productboard.com/strapi/1-roadmap/tabs/2-under-consideration"
-            endIcon={<ExternalLink />}
-          >
+          <Link href="https://feedback.strapi.io/" isExternal endIcon={<ExternalLink />}>
             {formatMessage({
               id: 'app.components.HomePage.roadmap',
               defaultMessage: 'See our road map',
@@ -182,7 +176,7 @@ const SocialLinks = () => {
         </Stack>
       </Box>
       <GridGap>
-        {socialLinks.map(socialLink => {
+        {socialLinks.map((socialLink) => {
           return (
             <GridItem col={6} s={12} key={socialLink.name}>
               <LinkCustom
@@ -190,6 +184,7 @@ const SocialLinks = () => {
                 startIcon={socialLink.icon}
                 variant="tertiary"
                 href={socialLink.link}
+                isExternal
               >
                 {socialLink.name}
               </LinkCustom>

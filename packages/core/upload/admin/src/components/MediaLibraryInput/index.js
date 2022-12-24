@@ -1,15 +1,18 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { useIntl } from 'react-intl';
+
 import { AssetDialog } from '../AssetDialog';
 import { AssetDefinition } from '../../constants';
 import { CarouselAssets } from './Carousel/CarouselAssets';
+import { EditFolderDialog } from '../EditFolderDialog';
 import { UploadAssetDialog } from '../UploadAssetDialog/UploadAssetDialog';
 import getAllowedFiles from '../../utils/getAllowedFiles';
 
-const Steps = {
-  SelectAsset: 'SelectAsset',
-  UploadAsset: 'UploadAsset',
+const STEPS = {
+  AssetSelect: 'SelectAsset',
+  AssetUpload: 'UploadAsset',
+  FolderCreate: 'FolderCreate',
 };
 
 export const MediaLibraryInput = ({
@@ -18,16 +21,19 @@ export const MediaLibraryInput = ({
   description,
   disabled,
   error,
+  labelAction,
   multiple,
   name,
   onChange,
   value,
+  required,
 }) => {
-  const fieldAllowedTypes = allowedTypes || ['files', 'images', 'videos'];
+  const fieldAllowedTypes = allowedTypes || ['files', 'images', 'videos', 'audios'];
   const [uploadedFiles, setUploadedFiles] = useState([]);
   const [step, setStep] = useState(undefined);
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [droppedAssets, setDroppedAssets] = useState();
+  const [folderId, setFolderId] = useState(null);
   const { formatMessage } = useIntl();
 
   useEffect(() => {
@@ -39,7 +45,7 @@ export const MediaLibraryInput = ({
 
   const selectedAssets = Array.isArray(value) ? value : [value];
 
-  const handleValidation = nextSelectedAssets => {
+  const handleValidation = (nextSelectedAssets) => {
     onChange({
       target: { name, value: multiple ? nextSelectedAssets : nextSelectedAssets[0] },
     });
@@ -65,11 +71,11 @@ export const MediaLibraryInput = ({
     setSelectedIndex(0);
   };
 
-  const handleDeleteAsset = asset => {
+  const handleDeleteAsset = (asset) => {
     let nextValue;
 
     if (multiple) {
-      const nextSelectedAssets = selectedAssets.filter(prevAsset => prevAsset.id !== asset.id);
+      const nextSelectedAssets = selectedAssets.filter((prevAsset) => prevAsset.id !== asset.id);
 
       nextValue = nextSelectedAssets.length > 0 ? nextSelectedAssets : null;
     } else {
@@ -83,8 +89,8 @@ export const MediaLibraryInput = ({
     setSelectedIndex(0);
   };
 
-  const handleAssetEdit = asset => {
-    const nextSelectedAssets = selectedAssets.map(prevAsset =>
+  const handleAssetEdit = (asset) => {
+    const nextSelectedAssets = selectedAssets.map((prevAsset) =>
       prevAsset.id === asset.id ? asset : prevAsset
     );
 
@@ -93,9 +99,9 @@ export const MediaLibraryInput = ({
     });
   };
 
-  const handleAssetDrop = assets => {
+  const handleAssetDrop = (assets) => {
     setDroppedAssets(assets);
-    setStep(Steps.UploadAsset);
+    setStep(STEPS.AssetUpload);
   };
 
   let label = intlLabel.id ? formatMessage(intlLabel) : '';
@@ -105,18 +111,17 @@ export const MediaLibraryInput = ({
   }
 
   const handleNext = () => {
-    setSelectedIndex(current => (current < selectedAssets.length - 1 ? current + 1 : 0));
+    setSelectedIndex((current) => (current < selectedAssets.length - 1 ? current + 1 : 0));
   };
 
   const handlePrevious = () => {
-    setSelectedIndex(current => (current > 0 ? current - 1 : selectedAssets.length - 1));
+    setSelectedIndex((current) => (current > 0 ? current - 1 : selectedAssets.length - 1));
   };
 
-  const handleFilesUploadSucceeded = uploadedFiles => {
-    setUploadedFiles(prev => [...prev, ...uploadedFiles]);
+  const handleFilesUploadSucceeded = (uploadedFiles) => {
+    setUploadedFiles((prev) => [...prev, ...uploadedFiles]);
   };
 
-  const errorMessage = error ? formatMessage({ id: error, defaultMessage: error }) : '';
   const hint = description
     ? formatMessage(
         { id: description.id, defaultMessage: description.defaultMessage },
@@ -140,50 +145,65 @@ export const MediaLibraryInput = ({
         assets={selectedAssets}
         disabled={disabled}
         label={label}
+        labelAction={labelAction}
         onDeleteAsset={handleDeleteAsset}
         onDeleteAssetFromMediaLibrary={handleDeleteAssetFromMediaLibrary}
-        onAddAsset={() => setStep(Steps.SelectAsset)}
+        onAddAsset={() => setStep(STEPS.AssetSelect)}
         onDropAsset={handleAssetDrop}
         onEditAsset={handleAssetEdit}
         onNext={handleNext}
         onPrevious={handlePrevious}
-        error={errorMessage}
+        error={error}
         hint={hint}
+        required={required}
         selectedAssetIndex={selectedIndex}
         trackedLocation="content-manager"
       />
 
-      {step === Steps.SelectAsset && (
+      {step === STEPS.AssetSelect && (
         <AssetDialog
           allowedTypes={fieldAllowedTypes}
           initiallySelectedAssets={initiallySelectedAssets}
-          onClose={() => setStep(undefined)}
+          folderId={folderId}
+          onClose={() => {
+            setStep(undefined);
+            setFolderId(null);
+          }}
           onValidate={handleValidation}
           multiple={multiple}
-          onAddAsset={() => setStep(Steps.UploadAsset)}
+          onAddAsset={() => setStep(STEPS.AssetUpload)}
+          onAddFolder={() => setStep(STEPS.FolderCreate)}
+          onChangeFolder={(folder) => setFolderId(folder)}
           trackedLocation="content-manager"
         />
       )}
 
-      {step === Steps.UploadAsset && (
+      {step === STEPS.AssetUpload && (
         <UploadAssetDialog
-          onClose={() => setStep(Steps.SelectAsset)}
+          onClose={() => setStep(STEPS.AssetSelect)}
           initialAssetsToAdd={droppedAssets}
           addUploadedFiles={handleFilesUploadSucceeded}
           trackedLocation="content-manager"
+          folderId={folderId}
         />
+      )}
+
+      {step === STEPS.FolderCreate && (
+        <EditFolderDialog onClose={() => setStep(STEPS.AssetSelect)} parentFolderId={folderId} />
       )}
     </>
   );
 };
 
 MediaLibraryInput.defaultProps = {
-  attribute: { allowedTypes: ['videos', 'files', 'images'] },
+  attribute: { allowedTypes: ['videos', 'files', 'images', 'audios'] },
   disabled: false,
   description: undefined,
   error: undefined,
   intlLabel: undefined,
+  labelAction: undefined,
   multiple: false,
+  required: false,
   value: [],
 };
 
@@ -195,10 +215,12 @@ MediaLibraryInput.propTypes = {
     defaultMessage: PropTypes.string,
     values: PropTypes.shape({}),
   }),
-  error: PropTypes.shape({ id: PropTypes.string, defaultMessage: PropTypes.string }),
+  error: PropTypes.string,
   intlLabel: PropTypes.shape({ id: PropTypes.string, defaultMessage: PropTypes.string }),
+  labelAction: PropTypes.node,
   multiple: PropTypes.bool,
   onChange: PropTypes.func.isRequired,
   name: PropTypes.string.isRequired,
+  required: PropTypes.bool,
   value: PropTypes.oneOfType([PropTypes.arrayOf(AssetDefinition), AssetDefinition]),
 };

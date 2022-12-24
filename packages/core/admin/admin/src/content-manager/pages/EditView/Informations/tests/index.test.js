@@ -8,11 +8,14 @@ import React from 'react';
 import { render } from '@testing-library/react';
 import { IntlProvider } from 'react-intl';
 import { useCMEditViewDataManager } from '@strapi/helper-plugin';
+import { lightTheme, darkTheme } from '@strapi/design-system';
 import Theme from '../../../../../components/Theme';
+import ThemeToggleProvider from '../../../../../components/ThemeToggleProvider';
 import Informations from '../index';
 
 jest.mock('@strapi/helper-plugin', () => ({
   useCMEditViewDataManager: jest.fn(),
+  wrapAxiosInstance: jest.fn(() => {}),
 }));
 
 const makeApp = () => {
@@ -22,9 +25,11 @@ const makeApp = () => {
       defaultLocale="en"
       messages={{ 'containers.Edit.information': 'Information' }}
     >
-      <Theme>
-        <Informations />
-      </Theme>
+      <ThemeToggleProvider themes={{ light: lightTheme, dark: darkTheme }}>
+        <Theme>
+          <Informations />
+        </Theme>
+      </ThemeToggleProvider>
     </IntlProvider>
   );
 };
@@ -67,27 +72,45 @@ describe('CONTENT MANAGER | EditView | Header', () => {
       }
 
       .c0 {
-        color: #666687;
         font-weight: 600;
         font-size: 0.6875rem;
         line-height: 1.45;
         text-transform: uppercase;
-      }
-
-      .c6 {
-        font-weight: 600;
-        color: #32324d;
-        font-size: 0.875rem;
-        line-height: 1.43;
+        color: #666687;
       }
 
       .c7 {
-        color: #32324d;
         font-size: 0.875rem;
         line-height: 1.43;
+        font-weight: 600;
+        color: #32324d;
       }
 
-      .c5 {
+      .c8 {
+        font-size: 0.875rem;
+        line-height: 1.43;
+        color: #32324d;
+      }
+
+      .c4 {
+        -webkit-align-items: stretch;
+        -webkit-box-align: stretch;
+        -ms-flex-align: stretch;
+        align-items: stretch;
+        display: -webkit-box;
+        display: -webkit-flex;
+        display: -ms-flexbox;
+        display: flex;
+        -webkit-flex-direction: column;
+        -ms-flex-direction: column;
+        flex-direction: column;
+      }
+
+      .c6 {
+        -webkit-align-items: center;
+        -webkit-box-align: center;
+        -ms-flex-align: center;
+        align-items: center;
         display: -webkit-box;
         display: -webkit-flex;
         display: -ms-flexbox;
@@ -99,28 +122,14 @@ describe('CONTENT MANAGER | EditView | Header', () => {
         -webkit-justify-content: space-between;
         -ms-flex-pack: justify;
         justify-content: space-between;
-        -webkit-align-items: center;
-        -webkit-box-align: center;
-        -ms-flex-align: center;
-        align-items: center;
       }
 
-      .c4 {
-        display: -webkit-box;
-        display: -webkit-flex;
-        display: -ms-flexbox;
-        display: flex;
-        -webkit-flex-direction: column;
-        -ms-flex-direction: column;
-        flex-direction: column;
-      }
-
-      .c4 > * {
+      .c5 > * {
         margin-top: 0;
         margin-bottom: 0;
       }
 
-      .c4 > * + * {
+      .c5 > * + * {
         margin-top: 16px;
       }
 
@@ -141,60 +150,61 @@ describe('CONTENT MANAGER | EditView | Header', () => {
           />
         </div>
         <div
-          class="c4"
+          class="c4 c5"
+          spacing="4"
         >
           <div
-            class="c5"
+            class="c6"
           >
             <span
-              class="c6"
+              class="c7"
             >
               Created
             </span>
             <span
-              class="c7"
+              class="c8"
             >
               now
             </span>
           </div>
           <div
-            class="c5"
+            class="c6"
           >
             <span
-              class="c6"
+              class="c7"
             >
               By
             </span>
             <span
-              class="c7"
+              class="c8"
             >
               -
             </span>
           </div>
           <div
-            class="c5"
+            class="c6"
           >
             <span
-              class="c6"
+              class="c7"
             >
               Last update
             </span>
             <span
-              class="c7"
+              class="c8"
             >
               now
             </span>
           </div>
           <div
-            class="c5"
+            class="c6"
           >
             <span
-              class="c6"
+              class="c7"
             >
               By
             </span>
             <span
-              class="c7"
+              class="c8"
             >
               -
             </span>

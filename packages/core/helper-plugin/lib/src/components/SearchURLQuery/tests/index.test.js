@@ -33,7 +33,23 @@ describe('<SearchURLQuery />', () => {
     const { container } = render(makeApp(history));
 
     expect(container).toMatchInlineSnapshot(`
-      .c4 {
+      .c5 {
+        border: 0;
+        -webkit-clip: rect(0 0 0 0);
+        clip: rect(0 0 0 0);
+        height: 1px;
+        margin: -1px;
+        overflow: hidden;
+        padding: 0;
+        position: absolute;
+        width: 1px;
+      }
+
+      .c3 {
+        color: #32324d;
+      }
+
+      .c2 {
         border: 0;
         -webkit-clip: rect(0 0 0 0);
         clip: rect(0 0 0 0);
@@ -143,11 +159,7 @@ describe('<SearchURLQuery />', () => {
         fill: #666687;
       }
 
-      .c2 {
-        color: #32324d;
-      }
-
-      .c3 path {
+      .c4 path {
         fill: #32324d;
       }
 
@@ -160,9 +172,16 @@ describe('<SearchURLQuery />', () => {
             tabindex="0"
             type="button"
           >
+            <span
+              class="c2"
+            >
+              Search
+            </span>
             <svg
-              class="c2 c3"
+              aria-hidden="true"
+              class="c3 c4"
               fill="none"
+              focusable="false"
               height="1em"
               viewBox="0 0 24 24"
               width="1em"
@@ -178,7 +197,7 @@ describe('<SearchURLQuery />', () => {
           </button>
         </span>
         <div
-          class="c4"
+          class="c5"
         >
           <p
             aria-live="polite"
@@ -222,19 +241,30 @@ describe('<SearchURLQuery />', () => {
         width: 1px;
       }
 
-      .c2 {
-        font-weight: 600;
-        color: #32324d;
-        font-size: 0.75rem;
-        line-height: 1.33;
-      }
-
-      .c6 {
+      .c7 {
         padding-right: 8px;
         padding-left: 12px;
       }
 
-      .c4 {
+      .c3 {
+        -webkit-align-items: center;
+        -webkit-box-align: center;
+        -ms-flex-align: center;
+        align-items: center;
+        display: -webkit-box;
+        display: -webkit-flex;
+        display: -ms-flexbox;
+        display: flex;
+        -webkit-flex-direction: row;
+        -ms-flex-direction: row;
+        flex-direction: row;
+      }
+
+      .c5 {
+        -webkit-align-items: center;
+        -webkit-box-align: center;
+        -ms-flex-align: center;
+        align-items: center;
         display: -webkit-box;
         display: -webkit-flex;
         display: -ms-flexbox;
@@ -246,36 +276,28 @@ describe('<SearchURLQuery />', () => {
         -webkit-justify-content: space-between;
         -ms-flex-pack: justify;
         justify-content: space-between;
-        -webkit-align-items: center;
-        -webkit-box-align: center;
-        -ms-flex-align: center;
-        align-items: center;
       }
 
-      .c8 {
-        display: -webkit-box;
-        display: -webkit-flex;
-        display: -ms-flexbox;
-        display: flex;
-        -webkit-flex-direction: row;
-        -ms-flex-direction: row;
-        flex-direction: row;
-        -webkit-align-items: center;
-        -webkit-box-align: center;
-        -ms-flex-align: center;
-        align-items: center;
+      .c2 {
+        font-size: 0.75rem;
+        line-height: 1.33;
+        font-weight: 600;
+        color: #32324d;
       }
 
       .c10 {
         border: none;
         border-radius: 4px;
+        padding-bottom: 0.40625rem;
         padding-left: 0;
         padding-right: 16px;
+        padding-top: 0.40625rem;
         color: #32324d;
         font-weight: 400;
         font-size: 0.875rem;
         display: block;
         width: 100%;
+        background: inherit;
       }
 
       .c10::-webkit-input-placeholder {
@@ -299,7 +321,6 @@ describe('<SearchURLQuery />', () => {
       }
 
       .c10[aria-disabled='true'] {
-        background: inherit;
         color: inherit;
       }
 
@@ -308,11 +329,10 @@ describe('<SearchURLQuery />', () => {
         box-shadow: none;
       }
 
-      .c5 {
+      .c6 {
         border: 1px solid #dcdce4;
         border-radius: 4px;
         background: #ffffff;
-        height: 2rem;
         outline: none;
         box-shadow: 0;
         -webkit-transition-property: border-color,box-shadow,fill;
@@ -321,7 +341,7 @@ describe('<SearchURLQuery />', () => {
         transition-duration: 0.2s;
       }
 
-      .c5:focus-within {
+      .c6:focus-within {
         border: 1px solid #4945ff;
         box-shadow: #4945ff 0px 0px 0px 2px;
       }
@@ -357,15 +377,15 @@ describe('<SearchURLQuery />', () => {
         transition-duration: 0.2s;
       }
 
-      .c0:focus-within .c7 svg path {
+      .c0:focus-within .c8 svg path {
         fill: #4945ff;
       }
 
-      .c0 .c3 {
+      .c0 .c4 {
         border: 1px solid transparent;
       }
 
-      .c0 .c3:focus-within {
+      .c0 .c4:focus-within {
         border: 1px solid #4945ff;
         box-shadow: #4945ff 0px 0px 0px 2px;
       }
@@ -384,19 +404,23 @@ describe('<SearchURLQuery />', () => {
                 >
                   <label
                     class="c2"
-                    for="field-1"
+                    for="field-5"
                   >
-                    Search label
+                    <div
+                      class="c3"
+                    >
+                      Search label
+                    </div>
                   </label>
                 </div>
                 <div
-                  class="c3 c4 c5"
+                  class="c4 c5 c6"
                 >
                   <div
-                    class="c6"
+                    class="c7"
                   >
                     <div
-                      class="c7 c8 c9"
+                      class="c8 c3 c9"
                     >
                       <svg
                         aria-hidden="true"
@@ -418,8 +442,9 @@ describe('<SearchURLQuery />', () => {
                   <input
                     aria-disabled="false"
                     aria-invalid="false"
+                    aria-required="false"
                     class="c10"
-                    id="field-1"
+                    id="field-5"
                     name="search"
                     value=""
                   />

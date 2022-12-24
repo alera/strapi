@@ -1,23 +1,26 @@
 import { render, screen, waitFor, fireEvent } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
 import React from 'react';
 import { Router } from 'react-router-dom';
 import { createMemoryHistory } from 'history';
+import { lightTheme, darkTheme } from '@strapi/design-system';
 import en from '../../../../../../../../translations/en.json';
 import Theme from '../../../../../../../../components/Theme';
+import ThemeToggleProvider from '../../../../../../../../components/ThemeToggleProvider';
 import LanguageProvider from '../../../../../../../../components/LanguageProvider';
 import WebhookForm from '../index';
 
-const makeApp = component => {
+const makeApp = (component) => {
   const history = createMemoryHistory();
   const messages = { en };
   const localeNames = { en: 'English' };
 
   return (
     <LanguageProvider messages={messages} localeNames={localeNames}>
-      <Theme>
-        <Router history={history}>{component}</Router>
-      </Theme>
+      <ThemeToggleProvider themes={{ light: lightTheme, dark: darkTheme }}>
+        <Theme>
+          <Router history={history}>{component}</Router>
+        </Theme>
+      </ThemeToggleProvider>
     </LanguageProvider>
   );
 };
@@ -35,6 +38,9 @@ describe('Create Webhook', () => {
         isTriggerIdle={false}
         isDraftAndPublishEvents={false}
         triggerWebhook={triggerWebhook}
+        data={{
+          name: '',
+        }}
       />
     );
 
@@ -55,16 +61,19 @@ describe('Create Webhook', () => {
         isTriggerIdle={false}
         isDraftAndPublishEvents={false}
         triggerWebhook={triggerWebhook}
+        data={{
+          name: '',
+        }}
       />
     );
 
     render(App);
 
-    userEvent.type(screen.getByLabelText(/name/i), 'My webhook');
-    userEvent.type(screen.getByLabelText(/url/i), 'https://google.fr');
+    fireEvent.change(screen.getByLabelText(/name/i), { target: { value: 'My webhook' } });
+    fireEvent.change(screen.getByLabelText(/url/i), { target: { value: 'https://google.fr' } });
     fireEvent.click(screen.getByRole('checkbox', { name: /entry.create/i }));
 
-    userEvent.click(screen.getByRole('button', { name: /Save/i }));
+    fireEvent.click(screen.getByRole('button', { name: /Save/i }));
 
     await waitFor(() => {
       expect(handleSubmit).toHaveBeenCalledTimes(1);

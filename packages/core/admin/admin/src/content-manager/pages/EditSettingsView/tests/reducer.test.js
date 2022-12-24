@@ -20,44 +20,6 @@ describe('CONTENT MANAGER | CONTAINERS | EditSettingsView | reducer', () => {
     expect(reducer(state, {})).toEqual(expected);
   });
 
-  describe('ADD_RELATION', () => {
-    it('should add a relation to the editRelations layout', () => {
-      state.modifiedData.layouts = {
-        editRelations: ['likes'],
-      };
-      const expected = {
-        ...state,
-        modifiedData: {
-          layouts: {
-            editRelations: ['likes', 'categories'],
-          },
-        },
-      };
-      const action = { type: 'ADD_RELATION', name: 'categories' };
-
-      expect(reducer(state, action)).toEqual(expected);
-    });
-  });
-
-  describe('MOVE_RELATION', () => {
-    it('should move the categories relation from the second place to the third', () => {
-      state.modifiedData.layouts = {
-        editRelations: ['likes', 'categories', 'users'],
-      };
-      const expected = {
-        ...state,
-        modifiedData: {
-          layouts: {
-            editRelations: ['likes', 'users', 'categories'],
-          },
-        },
-      };
-      const action = { type: 'MOVE_RELATION', fromIndex: 1, toIndex: 2 };
-
-      expect(reducer(state, action)).toEqual(expected);
-    });
-  });
-
   describe('MOVE_ROW', () => {
     it('should move the third field row to the first position', () => {
       state.modifiedData.layouts = {
@@ -277,15 +239,36 @@ describe('CONTENT MANAGER | CONTAINERS | EditSettingsView | reducer', () => {
   });
 
   describe('ON_CHANGE_META', () => {
-    it('should set the data to change in the modifiedData object', () => {
-      state.metaForm.label = 'Postal_coder';
+    it('should set the data to change in the modifiedData.metadata object', () => {
+      state.metaForm.metadata = {
+        label: 'Postal_coder',
+      };
       const expected = {
         ...state,
         metaForm: {
-          label: 'postal_code',
+          metadata: {
+            label: 'postal_code',
+          },
         },
       };
       const action = { type: 'ON_CHANGE_META', keys: ['label'], value: 'postal_code' };
+
+      expect(reducer(state, action)).toEqual(expected);
+    });
+  });
+
+  describe('ON_CHANGE_SIZE', () => {
+    it('should set the data to change in the modifiedData.size object', () => {
+      state.metaForm.metadata = {};
+
+      const expected = {
+        ...state,
+        metaForm: {
+          metadata: {},
+          size: 6,
+        },
+      };
+      const action = { type: 'ON_CHANGE_SIZE', name: 'postal_code', value: 6 };
 
       expect(reducer(state, action)).toEqual(expected);
     });
@@ -360,25 +343,6 @@ describe('CONTENT MANAGER | CONTAINERS | EditSettingsView | reducer', () => {
       };
       const action = { type: 'REMOVE_FIELD', rowIndex: 0, fieldIndex: 1 };
       //
-      expect(reducer(state, action)).toEqual(expected);
-    });
-  });
-
-  describe('REMOVE_RELATION', () => {
-    it('should remove the first relation from the relation list', () => {
-      state.modifiedData.layouts = {
-        editRelations: ['likes', 'categories'],
-      };
-      const expected = {
-        ...state,
-        modifiedData: {
-          layouts: {
-            editRelations: ['categories'],
-          },
-        },
-      };
-      const action = { type: 'REMOVE_RELATION', index: 0 };
-
       expect(reducer(state, action)).toEqual(expected);
     });
   });
@@ -563,7 +527,10 @@ describe('CONTENT MANAGER | CONTAINERS | EditSettingsView | reducer', () => {
         ...state,
         metaToEdit: 'city',
         metaForm: {
-          label: 'City',
+          metadata: {
+            label: 'City',
+          },
+          size: 6,
         },
         modifiedData: {
           metadatas: {
@@ -585,7 +552,9 @@ describe('CONTENT MANAGER | CONTAINERS | EditSettingsView | reducer', () => {
     it('should submit the meta form', () => {
       state.metaToEdit = 'city';
       state.metaForm = {
-        label: 'New City label',
+        metadata: {
+          label: 'New City label',
+        },
       };
       state.modifiedData.metadatas = {
         city: {
@@ -598,7 +567,9 @@ describe('CONTENT MANAGER | CONTAINERS | EditSettingsView | reducer', () => {
         ...state,
         metaToEdit: 'city',
         metaForm: {
-          label: 'New City label',
+          metadata: {
+            label: 'New City label',
+          },
         },
         modifiedData: {
           metadatas: {
@@ -658,7 +629,7 @@ describe('CONTENT MANAGER | CONTAINERS | EditSettingsView | reducer', () => {
   describe('UNSET_FIELD_TO_EDIT', () => {
     it('should unset the metadatas to edit and the form data', () => {
       state.metaToEdit = 'city';
-      state.metaForm = {
+      state.metaForm.metadata = {
         label: 'New city label',
       };
       const expected = {

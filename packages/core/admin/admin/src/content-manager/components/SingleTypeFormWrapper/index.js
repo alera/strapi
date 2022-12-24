@@ -1,11 +1,13 @@
 import { memo, useCallback, useEffect, useRef, useState } from 'react';
 import { useHistory } from 'react-router-dom';
+import { useQueryClient } from 'react-query';
 import get from 'lodash/get';
 import {
   useTracking,
-  formatComponentData,
+  formatContentTypeData,
   useQueryParams,
   useNotification,
+  useGuidedTour,
 } from '@strapi/helper-plugin';
 import { useSelector, useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
@@ -27,8 +29,10 @@ import buildQueryString from '../../pages/ListView/utils/buildQueryString';
 
 // This container is used to handle the CRUD
 const SingleTypeFormWrapper = ({ allLayoutData, children, slug }) => {
+  const queryClient = useQueryClient();
   const { trackUsage } = useTracking();
   const { push } = useHistory();
+  const { setCurrentStep } = useGuidedTour();
   const trackUsageRef = useRef(trackUsage);
   const [isCreatingEntry, setIsCreatingEntry] = useState(true);
   const [{ query, rawQuery }] = useQueryParams();
@@ -36,16 +40,11 @@ const SingleTypeFormWrapper = ({ allLayoutData, children, slug }) => {
   const toggleNotification = useNotification();
   const dispatch = useDispatch();
 
-  const {
-    componentsDataStructure,
-    contentTypeDataStructure,
-    data,
-    isLoading,
-    status,
-  } = useSelector(selectCrudReducer);
+  const { componentsDataStructure, contentTypeDataStructure, data, isLoading, status } =
+    useSelector(selectCrudReducer);
 
   const cleanReceivedData = useCallback(
-    data => {
+    (data) => {
       const cleaned = removePasswordFieldsFromData(
         data,
         allLayoutData.contentType,
@@ -53,7 +52,7 @@ const SingleTypeFormWrapper = ({ allLayoutData, children, slug }) => {
       );
 
       // This is needed in order to add a unique id for the repeatable components, in order to make the reorder easier
-      return formatComponentData(cleaned, allLayoutData.contentType, allLayoutData.components);
+      return formatContentTypeData(cleaned, allLayoutData.contentType, allLayoutData.components);
     },
     [allLayoutData]
   );
@@ -71,7 +70,7 @@ const SingleTypeFormWrapper = ({ allLayoutData, children, slug }) => {
         allLayoutData.components
       );
 
-      acc[current] = formatComponentData(
+      acc[current] = formatContentTypeData(
         defaultComponentForm,
         allLayoutData.components[current],
         allLayoutData.components
@@ -84,7 +83,7 @@ const SingleTypeFormWrapper = ({ allLayoutData, children, slug }) => {
       allLayoutData.contentType.attributes,
       allLayoutData.components
     );
-    const contentTypeDataStructureFormatted = formatComponentData(
+    const contentTypeDataStructureFormatted = formatContentTypeData(
       contentTypeDataStructure,
       allLayoutData.contentType,
       allLayoutData.components
@@ -98,13 +97,13 @@ const SingleTypeFormWrapper = ({ allLayoutData, children, slug }) => {
     const CancelToken = axios.CancelToken;
     const source = CancelToken.source();
 
-    const fetchData = async source => {
+    const fetchData = async (source) => {
       dispatch(getData());
 
       setIsCreatingEntry(true);
 
       try {
-        const { data } = await axiosInstance(getRequestUrl(`${slug}${searchToSend}`), {
+        const { data } = await axiosInstance.get(getRequestUrl(`${slug}${searchToSend}`), {
           cancelToken: source.token,
         });
 
@@ -140,11 +139,9 @@ const SingleTypeFormWrapper = ({ allLayoutData, children, slug }) => {
   }, [cleanReceivedData, push, slug, dispatch, searchToSend, rawQuery, toggleNotification]);
 
   const displayErrors = useCallback(
-    err => {
-      const errorPayload = err.response.payload;
-      console.error(errorPayload);
-
-      let errorMessage = get(errorPayload, ['message'], 'Bad Request');
+    (err) => {
+      const errorPayload = err.response.data;
+      let errorMessage = get(errorPayload, ['error', 'message'], 'Bad Request');
 
       // TODO handle errors correctly when back-end ready
       if (Array.isArray(errorMessage)) {
@@ -159,7 +156,7 @@ const SingleTypeFormWrapper = ({ allLayoutData, children, slug }) => {
   );
 
   const onDelete = useCallback(
-    async trackerProperty => {
+    async (trackerProperty) => {
       try {
         trackUsageRef.current('willDeleteEntry', trackerProperty);
 
@@ -176,10 +173,12 @@ const SingleTypeFormWrapper = ({ allLayoutData, children, slug }) => {
       } catch (err) {
         trackUsageRef.current('didNotDeleteEntry', { error: err, ...trackerProperty });
 
+        displayErrors(err);
+
         return Promise.reject(err);
       }
     },
-    [slug, toggleNotification, searchToSend]
+    [slug, displayErrors, toggleNotification, searchToSend]
   );
 
   const onDeleteSucceeded = useCallback(() => {
@@ -203,20 +202,60 @@ const SingleTypeFormWrapper = ({ allLayoutData, children, slug }) => {
           message: { id: getTrad('success.record.save') },
         });
 
+        setCurrentStep('contentManager.success');
+
+        // TODO: need to find a better place, or a better abstraction
+        queryClient.invalidateQueries(['relation']);
+
         dispatch(submitSucceeded(cleanReceivedData(data)));
         setIsCreatingEntry(false);
 
         dispatch(setStatus('resolved'));
+
+        return Promise.resolve(data);
       } catch (err) {
         trackUsageRef.current('didNotCreateEntry', { error: err, trackerProperty });
 
         displayErrors(err);
 
         dispatch(setStatus('resolved'));
+
+        return Promise.reject(err);
       }
     },
-    [cleanReceivedData, displayErrors, slug, dispatch, rawQuery, toggleNotification]
+    [
+      cleanReceivedData,
+      displayErrors,
+      slug,
+      dispatch,
+      rawQuery,
+      toggleNotification,
+      setCurrentStep,
+      queryClient,
+    ]
   );
+
+  const onDraftRelationCheck = useCallback(async () => {
+    try {
+      trackUsageRef.current('willCheckDraftRelations');
+
+      const endPoint = getRequestUrl(`${slug}/actions/numberOfDraftRelations`);
+      dispatch(setStatus('draft-relation-check-pending'));
+
+      const numberOfDraftRelations = await axiosInstance.get(endPoint);
+      trackUsageRef.current('didCheckDraftRelations');
+
+      dispatch(setStatus('resolved'));
+
+      return numberOfDraftRelations.data.data;
+    } catch (err) {
+      displayErrors(err);
+      dispatch(setStatus('resolved'));
+
+      return Promise.reject(err);
+    }
+  }, [displayErrors, slug, dispatch]);
+
   const onPublish = useCallback(async () => {
     try {
       trackUsageRef.current('willPublishEntry');
@@ -235,10 +274,14 @@ const SingleTypeFormWrapper = ({ allLayoutData, children, slug }) => {
       dispatch(submitSucceeded(cleanReceivedData(data)));
 
       dispatch(setStatus('resolved'));
+
+      return Promise.resolve(data);
     } catch (err) {
       displayErrors(err);
 
       dispatch(setStatus('resolved'));
+
+      return Promise.reject(err);
     }
   }, [cleanReceivedData, displayErrors, slug, searchToSend, dispatch, toggleNotification]);
 
@@ -260,18 +303,25 @@ const SingleTypeFormWrapper = ({ allLayoutData, children, slug }) => {
 
         trackUsageRef.current('didEditEntry', { trackerProperty });
 
+        // TODO: need to find a better place, or a better abstraction
+        queryClient.invalidateQueries(['relation']);
+
         dispatch(submitSucceeded(cleanReceivedData(data)));
 
         dispatch(setStatus('resolved'));
+
+        return Promise.resolve(data);
       } catch (err) {
         displayErrors(err);
 
         trackUsageRef.current('didNotEditEntry', { error: err, trackerProperty });
 
         dispatch(setStatus('resolved'));
+
+        return Promise.reject(err);
       }
     },
-    [cleanReceivedData, displayErrors, slug, dispatch, rawQuery, toggleNotification]
+    [cleanReceivedData, displayErrors, slug, dispatch, rawQuery, toggleNotification, queryClient]
   );
 
   // The publish and unpublish method could be refactored but let's leave the duplication for now
@@ -309,6 +359,7 @@ const SingleTypeFormWrapper = ({ allLayoutData, children, slug }) => {
     onDelete,
     onDeleteSucceeded,
     onPost,
+    onDraftRelationCheck,
     onPublish,
     onPut,
     onUnpublish,

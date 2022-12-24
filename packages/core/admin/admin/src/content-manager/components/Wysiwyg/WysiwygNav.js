@@ -11,7 +11,7 @@ import { Flex } from '@strapi/design-system/Flex';
 import Bold from '@strapi/icons/Bold';
 import Italic from '@strapi/icons/Italic';
 import Underline from '@strapi/icons/Underline';
-import Strikethrough from '@strapi/icons/Strikethrough';
+import StrikeThrough from '@strapi/icons/StrikeThrough';
 import BulletList from '@strapi/icons/BulletList';
 import NumberList from '@strapi/icons/NumberList';
 import Code from '@strapi/icons/Code';
@@ -28,7 +28,9 @@ import {
 } from './WysiwygStyles';
 
 const WysiwygNav = ({
+  disabled,
   editorRef,
+  isExpandMode,
   isPreviewMode,
   onActionClick,
   onToggleMediaLib,
@@ -43,10 +45,10 @@ const WysiwygNav = ({
   const buttonMoreRef = useRef();
 
   const handleTogglePopover = () => {
-    setVisiblePopover(prev => !prev);
+    setVisiblePopover((prev) => !prev);
   };
 
-  if (isPreviewMode) {
+  if (disabled || isPreviewMode) {
     return (
       <Box padding={2} background="neutral100">
         <Flex justifyContent="space-between">
@@ -87,12 +89,14 @@ const WysiwygNav = ({
             <MoreButton disabled id="more" label="More" icon={<More />} />
           </Flex>
 
-          <Button onClick={onTogglePreviewMode} variant="tertiary" id="preview">
-            {formatMessage({
-              id: 'components.Wysiwyg.ToggleMode.markdown-mode',
-              defaultMessage: 'Markdown mode',
-            })}
-          </Button>
+          {!isExpandMode && (
+            <Button onClick={onTogglePreviewMode} variant="tertiary" id="preview">
+              {formatMessage({
+                id: 'components.Wysiwyg.ToggleMode.markdown-mode',
+                defaultMessage: 'Markdown mode',
+              })}
+            </Button>
+          )}
         </Flex>
       </Box>
     );
@@ -106,7 +110,7 @@ const WysiwygNav = ({
             id="selectTitle"
             placeholder={selectPlaceholder}
             size="S"
-            onChange={value => onActionClick(value, editorRef)}
+            onChange={(value) => onActionClick(value, editorRef)}
           >
             <Option value="h1">h1</Option>
             <Option value="h2">h2</Option>
@@ -149,7 +153,7 @@ const WysiwygNav = ({
           />
           {visiblePopover && (
             <Popover centered source={buttonMoreRef} spacing={4} id="popover">
-              <FocusTrap onEscape={handleTogglePopover}>
+              <FocusTrap onEscape={handleTogglePopover} restoreFocus={false}>
                 <Flex>
                   <IconButtonGroupMargin>
                     <CustomIconButton
@@ -157,7 +161,7 @@ const WysiwygNav = ({
                       id="Strikethrough"
                       label="Strikethrough"
                       name="Strikethrough"
-                      icon={<Strikethrough />}
+                      icon={<StrikeThrough />}
                     />
                     <CustomIconButton
                       onClick={() => onActionClick('BulletList', editorRef, handleTogglePopover)}
@@ -229,13 +233,15 @@ const WysiwygNav = ({
 
 WysiwygNav.defaultProps = {
   isPreviewMode: false,
-  onActionClick: () => {},
-  onToggleMediaLib: () => {},
+  onActionClick() {},
+  onToggleMediaLib() {},
   onTogglePreviewMode: undefined,
 };
 
 WysiwygNav.propTypes = {
+  disabled: PropTypes.bool.isRequired,
   editorRef: PropTypes.shape({ current: PropTypes.any }).isRequired,
+  isExpandMode: PropTypes.bool.isRequired,
   isPreviewMode: PropTypes.bool,
   onActionClick: PropTypes.func,
   onToggleMediaLib: PropTypes.func,

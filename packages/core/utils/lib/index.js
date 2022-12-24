@@ -19,6 +19,10 @@ const {
   stringEquals,
   isKebabCase,
   isCamelCase,
+  toRegressedEnumValue,
+  startsWithANumber,
+  joinBy,
+  toKebabCase,
 } = require('./string-formatting');
 const { removeUndefined } = require('./object-formatting');
 const { getConfigUrls, getAbsoluteAdminUrl, getAbsoluteServerUrl } = require('./config');
@@ -34,6 +38,8 @@ const pagination = require('./pagination');
 const sanitize = require('./sanitize');
 const traverseEntity = require('./traverse-entity');
 const pipeAsync = require('./pipe-async');
+const convertQueryParams = require('./convert-query-params');
+const importDefault = require('./import-default');
 
 module.exports = {
   yup,
@@ -47,6 +53,9 @@ module.exports = {
   traverseEntity,
   parseType,
   nameToSlug,
+  toRegressedEnumValue,
+  startsWithANumber,
+  joinBy,
   nameToCollectionName,
   getCommonBeginning,
   getConfigUrls,
@@ -59,6 +68,7 @@ module.exports = {
   stringEquals,
   isKebabCase,
   isCamelCase,
+  toKebabCase,
   contentTypes,
   webhook,
   env,
@@ -71,4 +81,6 @@ module.exports = {
   errors,
   validateYupSchema,
   validateYupSchemaSync,
+  convertQueryParams,
+  importDefault,
 };

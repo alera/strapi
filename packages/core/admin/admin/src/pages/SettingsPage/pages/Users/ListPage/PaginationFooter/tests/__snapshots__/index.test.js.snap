@@ -1,7 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`DynamicTable renders and matches the snapshot 1`] = `
-.c28 {
+.c19 {
   border: 0;
   -webkit-clip: rect(0 0 0 0);
   clip: rect(0 0 0 0);
@@ -17,11 +17,24 @@ exports[`DynamicTable renders and matches the snapshot 1`] = `
   padding-top: 16px;
 }
 
+.c9 {
+  padding-right: 16px;
+  padding-left: 16px;
+}
+
+.c11 {
+  padding-left: 12px;
+}
+
 .c14 {
   padding-left: 8px;
 }
 
 .c1 {
+  -webkit-align-items: flex-end;
+  -webkit-box-align: flex-end;
+  -ms-flex-align: flex-end;
+  align-items: flex-end;
   display: -webkit-box;
   display: -webkit-flex;
   display: -ms-flexbox;
@@ -33,13 +46,13 @@ exports[`DynamicTable renders and matches the snapshot 1`] = `
   -webkit-justify-content: space-between;
   -ms-flex-pack: justify;
   justify-content: space-between;
-  -webkit-align-items: flex-end;
-  -webkit-box-align: flex-end;
-  -ms-flex-align: flex-end;
-  align-items: flex-end;
 }
 
 .c2 {
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
   display: -webkit-box;
   display: -webkit-flex;
   display: -ms-flexbox;
@@ -47,13 +60,27 @@ exports[`DynamicTable renders and matches the snapshot 1`] = `
   -webkit-flex-direction: row;
   -ms-flex-direction: row;
   flex-direction: row;
+}
+
+.c3 {
+  -webkit-align-items: stretch;
+  -webkit-box-align: stretch;
+  -ms-flex-align: stretch;
+  align-items: stretch;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+}
+
+.c7 {
   -webkit-align-items: center;
   -webkit-box-align: center;
   -ms-flex-align: center;
   align-items: center;
-}
-
-.c16 {
   display: -webkit-box;
   display: -webkit-flex;
   display: -ms-flexbox;
@@ -61,174 +88,44 @@ exports[`DynamicTable renders and matches the snapshot 1`] = `
   -webkit-flex-direction: row;
   -ms-flex-direction: row;
   flex-direction: row;
-  -webkit-align-items: center;
-  -webkit-box-align: center;
-  -ms-flex-align: center;
-  align-items: center;
+  -webkit-box-pack: justify;
+  -webkit-justify-content: space-between;
+  -ms-flex-pack: justify;
+  justify-content: space-between;
 }
 
-.c17 > * + * {
-  margin-left: 4px;
-}
-
-.c20 {
-  border: 0;
-  -webkit-clip: rect(0 0 0 0);
-  clip: rect(0 0 0 0);
-  height: 1px;
-  margin: -1px;
+.c10 {
+  font-size: 0.875rem;
+  line-height: 1.43;
+  display: block;
+  white-space: nowrap;
   overflow: hidden;
-  padding: 0;
-  position: absolute;
-  width: 1px;
-}
-
-.c23 {
-  font-weight: 600;
+  text-overflow: ellipsis;
   color: #32324d;
-  font-size: 0.75rem;
-  line-height: 1.33;
 }
 
-.c26 {
-  color: #32324d;
-  font-size: 0.75rem;
-  line-height: 1.33;
-}
-
-.c24 {
-  line-height: revert;
-}
-
-.c18 {
-  padding: 12px;
-  border-radius: 4px;
-  -webkit-text-decoration: none;
-  text-decoration: none;
-  display: -webkit-box;
-  display: -webkit-flex;
-  display: -ms-flexbox;
-  display: flex;
-  position: relative;
-  outline: none;
-}
-
-.c18:after {
-  -webkit-transition-property: all;
-  transition-property: all;
-  -webkit-transition-duration: 0.2s;
-  transition-duration: 0.2s;
-  border-radius: 8px;
-  content: '';
-  position: absolute;
-  top: -4px;
-  bottom: -4px;
-  left: -4px;
-  right: -4px;
-  border: 2px solid transparent;
-}
-
-.c18:focus-visible {
-  outline: none;
-}
-
-.c18:focus-visible:after {
-  border-radius: 8px;
-  content: '';
-  position: absolute;
-  top: -5px;
-  bottom: -5px;
-  left: -5px;
-  right: -5px;
-  border: 2px solid #4945ff;
-}
-
-.c21 {
-  padding: 12px;
-  border-radius: 4px;
-  box-shadow: 0px 1px 4px rgba(33,33,52,0.1);
-  -webkit-text-decoration: none;
-  text-decoration: none;
-  display: -webkit-box;
-  display: -webkit-flex;
-  display: -ms-flexbox;
-  display: flex;
-  position: relative;
-  outline: none;
-}
-
-.c21:after {
-  -webkit-transition-property: all;
-  transition-property: all;
-  -webkit-transition-duration: 0.2s;
-  transition-duration: 0.2s;
-  border-radius: 8px;
-  content: '';
-  position: absolute;
-  top: -4px;
-  bottom: -4px;
-  left: -4px;
-  right: -4px;
-  border: 2px solid transparent;
-}
-
-.c21:focus-visible {
-  outline: none;
-}
-
-.c21:focus-visible:after {
-  border-radius: 8px;
-  content: '';
-  position: absolute;
-  top: -5px;
-  bottom: -5px;
-  left: -5px;
-  right: -5px;
-  border: 2px solid #4945ff;
+.c15 {
+  font-size: 0.875rem;
+  line-height: 1.43;
+  color: #666687;
 }
 
 .c22 {
-  color: #271fe0;
-  background: #ffffff;
-}
-
-.c22:hover {
-  box-shadow: 0px 1px 4px rgba(33,33,52,0.1);
-}
-
-.c25 {
+  font-size: 0.75rem;
+  line-height: 1.33;
+  font-weight: 600;
   color: #32324d;
 }
 
-.c25:hover {
-  box-shadow: 0px 1px 4px rgba(33,33,52,0.1);
+.c25 {
+  font-size: 0.75rem;
+  line-height: 1.33;
+  color: #32324d;
 }
 
-.c19 {
-  font-size: 0.7rem;
-  pointer-events: none;
-}
-
-.c19 svg path {
-  fill: #c0c0cf;
-}
-
-.c19:focus svg path,
-.c19:hover svg path {
-  fill: #c0c0cf;
-}
-
-.c27 {
-  font-size: 0.7rem;
-}
-
-.c27 svg path {
-  fill: #666687;
-}
-
-.c27:focus svg path,
-.c27:hover svg path {
-  fill: #4a4a6a;
+.c4 > * {
+  margin-top: 0;
+  margin-bottom: 0;
 }
 
 .c6 {
@@ -248,76 +145,6 @@ exports[`DynamicTable renders and matches the snapshot 1`] = `
 
 .c6[aria-disabled='true'] {
   cursor: not-allowed;
-}
-
-.c10 {
-  color: #32324d;
-  display: block;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  font-size: 0.875rem;
-  line-height: 1.43;
-}
-
-.c9 {
-  padding-right: 16px;
-  padding-left: 16px;
-}
-
-.c11 {
-  padding-left: 12px;
-}
-
-.c4 {
-  display: -webkit-box;
-  display: -webkit-flex;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-flex-direction: row;
-  -ms-flex-direction: row;
-  flex-direction: row;
-  -webkit-align-items: center;
-  -webkit-box-align: center;
-  -ms-flex-align: center;
-  align-items: center;
-}
-
-.c7 {
-  display: -webkit-box;
-  display: -webkit-flex;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-flex-direction: row;
-  -ms-flex-direction: row;
-  flex-direction: row;
-  -webkit-box-pack: justify;
-  -webkit-justify-content: space-between;
-  -ms-flex-pack: justify;
-  justify-content: space-between;
-  -webkit-align-items: center;
-  -webkit-box-align: center;
-  -ms-flex-align: center;
-  align-items: center;
-}
-
-.c3 {
-  display: -webkit-box;
-  display: -webkit-flex;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-flex-direction: column;
-  -ms-flex-direction: column;
-  flex-direction: column;
-}
-
-.c3 > * {
-  margin-top: 0;
-  margin-bottom: 0;
-}
-
-.c3 > * + * {
-  margin-top: 0px;
 }
 
 .c5 {
@@ -374,10 +201,143 @@ exports[`DynamicTable renders and matches the snapshot 1`] = `
   width: 100%;
 }
 
-.c15 {
-  color: #666687;
-  font-size: 0.875rem;
-  line-height: 1.43;
+.c16 > * + * {
+  margin-left: 4px;
+}
+
+.c23 {
+  line-height: revert;
+}
+
+.c17 {
+  padding: 12px;
+  border-radius: 4px;
+  -webkit-text-decoration: none;
+  text-decoration: none;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  position: relative;
+  outline: none;
+}
+
+.c17:after {
+  -webkit-transition-property: all;
+  transition-property: all;
+  -webkit-transition-duration: 0.2s;
+  transition-duration: 0.2s;
+  border-radius: 8px;
+  content: '';
+  position: absolute;
+  top: -4px;
+  bottom: -4px;
+  left: -4px;
+  right: -4px;
+  border: 2px solid transparent;
+}
+
+.c17:focus-visible {
+  outline: none;
+}
+
+.c17:focus-visible:after {
+  border-radius: 8px;
+  content: '';
+  position: absolute;
+  top: -5px;
+  bottom: -5px;
+  left: -5px;
+  right: -5px;
+  border: 2px solid #4945ff;
+}
+
+.c20 {
+  padding: 12px;
+  border-radius: 4px;
+  box-shadow: 0px 1px 4px rgba(33,33,52,0.1);
+  -webkit-text-decoration: none;
+  text-decoration: none;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  position: relative;
+  outline: none;
+}
+
+.c20:after {
+  -webkit-transition-property: all;
+  transition-property: all;
+  -webkit-transition-duration: 0.2s;
+  transition-duration: 0.2s;
+  border-radius: 8px;
+  content: '';
+  position: absolute;
+  top: -4px;
+  bottom: -4px;
+  left: -4px;
+  right: -4px;
+  border: 2px solid transparent;
+}
+
+.c20:focus-visible {
+  outline: none;
+}
+
+.c20:focus-visible:after {
+  border-radius: 8px;
+  content: '';
+  position: absolute;
+  top: -5px;
+  bottom: -5px;
+  left: -5px;
+  right: -5px;
+  border: 2px solid #4945ff;
+}
+
+.c21 {
+  color: #271fe0;
+  background: #ffffff;
+}
+
+.c21:hover {
+  box-shadow: 0px 1px 4px rgba(33,33,52,0.1);
+}
+
+.c24 {
+  color: #32324d;
+}
+
+.c24:hover {
+  box-shadow: 0px 1px 4px rgba(33,33,52,0.1);
+}
+
+.c18 {
+  font-size: 0.7rem;
+  pointer-events: none;
+}
+
+.c18 svg path {
+  fill: #c0c0cf;
+}
+
+.c18:focus svg path,
+.c18:hover svg path {
+  fill: #c0c0cf;
+}
+
+.c26 {
+  font-size: 0.7rem;
+}
+
+.c26 svg path {
+  fill: #666687;
+}
+
+.c26:focus svg path,
+.c26:hover svg path {
+  fill: #4a4a6a;
 }
 
 <div>
@@ -392,10 +352,10 @@ exports[`DynamicTable renders and matches the snapshot 1`] = `
       >
         <div>
           <div
-            class="c3"
+            class="c3 c4"
           >
             <div
-              class="c4 c5"
+              class="c2 c5"
             >
               <button
                 aria-disabled="false"
@@ -411,7 +371,7 @@ exports[`DynamicTable renders and matches the snapshot 1`] = `
                 class="c7 c8"
               >
                 <div
-                  class="c4"
+                  class="c2"
                 >
                   <div
                     class="c9"
@@ -425,12 +385,13 @@ exports[`DynamicTable renders and matches the snapshot 1`] = `
                   </div>
                 </div>
                 <div
-                  class="c4"
+                  class="c2"
                 >
                   <button
                     aria-hidden="true"
                     class="c11 c12 c13"
                     tabindex="-1"
+                    title="Carret Down Button"
                     type="button"
                   >
                     <svg
@@ -466,21 +427,21 @@ exports[`DynamicTable renders and matches the snapshot 1`] = `
       </div>
       <nav
         aria-label="pagination"
-        class="sc-fHeRUh"
+        class=""
       >
         <ul
-          class="c16 c17"
+          class="c2 c16"
         >
           <li>
             <a
               aria-current="page"
               aria-disabled="true"
-              class="c18 c19 active"
+              class="c17 c18 active"
               href="/settings/user"
               tabindex="-1"
             >
               <div
-                class="c20"
+                class="c19"
               >
                 Go to previous page
               </div>
@@ -502,17 +463,17 @@ exports[`DynamicTable renders and matches the snapshot 1`] = `
           <li>
             <a
               aria-current="page"
-              class="c21 c22 active"
+              class="c20 c21 active"
               href="/settings/user?pageSize=10&page=1&sort=firstname"
             >
               <div
-                class="c20"
+                class="c19"
               >
                 Go to page 1
               </div>
               <span
                 aria-hidden="true"
-                class="c23 c24"
+                class="c22 c23"
               >
                 1
               </span>
@@ -521,17 +482,17 @@ exports[`DynamicTable renders and matches the snapshot 1`] = `
           <li>
             <a
               aria-current="page"
-              class="c18 c25 active"
+              class="c17 c24 active"
               href="/settings/user?pageSize=10&page=2&sort=firstname"
             >
               <div
-                class="c20"
+                class="c19"
               >
                 Go to page 2
               </div>
               <span
                 aria-hidden="true"
-                class="c26 c24"
+                class="c25 c23"
               >
                 2
               </span>
@@ -541,11 +502,11 @@ exports[`DynamicTable renders and matches the snapshot 1`] = `
             <a
               aria-current="page"
               aria-disabled="false"
-              class="c18 c27 active"
+              class="c17 c26 active"
               href="/settings/user?pageSize=10&page=2&sort=firstname"
             >
               <div
-                class="c20"
+                class="c19"
               >
                 Go to next page
               </div>
@@ -558,7 +519,7 @@ exports[`DynamicTable renders and matches the snapshot 1`] = `
                 xmlns="http://www.w3.org/2000/svg"
               >
                 <path
-                  d="M.12 1.88L6.227 8 .12 14.12 2 16l8-8-8-8L.12 1.88z"
+                  d="M0 1.88L6.107 8 0 14.12 1.88 16l8-8-8-8L0 1.88z"
                   fill="#32324D"
                 />
               </svg>
@@ -569,7 +530,7 @@ exports[`DynamicTable renders and matches the snapshot 1`] = `
     </div>
   </div>
   <div
-    class="c28"
+    class="c19"
   >
     <p
       aria-live="polite"

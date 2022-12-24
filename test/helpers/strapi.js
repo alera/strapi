@@ -2,6 +2,7 @@
 
 const path = require('path');
 const _ = require('lodash');
+const dotenv = require('dotenv');
 const strapi = require('../../packages/core/strapi/lib');
 const { createUtils } = require('./utils');
 
@@ -18,10 +19,15 @@ const TEST_APP_URL = path.resolve(__dirname, '../../testApp');
 
 const createStrapiInstance = async ({
   ensureSuperAdmin = true,
-  logLevel = 'fatal',
+  logLevel = 'error',
   bypassAuth = true,
 } = {}) => {
-  const options = { dir: TEST_APP_URL };
+  // read .env file as it could have been updated
+  dotenv.config({ path: process.env.ENV_PATH });
+  const options = {
+    appDir: TEST_APP_URL,
+    distDir: TEST_APP_URL,
+  };
   const instance = strapi(options);
 
   if (bypassAuth) {
@@ -30,17 +36,14 @@ const createStrapiInstance = async ({
       authenticate() {
         return { authenticated: true };
       },
-      verify() {
-        return;
-      },
+      verify() {},
     });
   }
-
   await instance.load();
 
   instance.log.level = logLevel;
 
-  instance.server.mount();
+  await instance.server.listen();
 
   const utils = createUtils(instance);
 

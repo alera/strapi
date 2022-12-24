@@ -18,14 +18,24 @@ export const EmptyStateAsset = ({ disabled, onClick, onDropAsset }) => {
   const { formatMessage } = useIntl();
   const [dragOver, setDragOver] = useState(false);
 
-  const handleDragEnter = () => setDragOver(true);
-  const handleDragLeave = e => {
+  const handleDragEnter = (e) => {
+    e.preventDefault();
+    setDragOver(true);
+  };
+
+  const handleDragLeave = (e) => {
     if (!e.currentTarget.contains(e.relatedTarget)) {
       setDragOver(false);
     }
   };
 
-  const handleDrop = e => {
+  const handleDragOver = (e) => {
+    e.preventDefault();
+  };
+
+  const handleDrop = (e) => {
+    e.preventDefault();
+
     if (e?.dataTransfer?.files) {
       const files = e.dataTransfer.files;
       const assets = [];
@@ -59,6 +69,7 @@ export const EmptyStateAsset = ({ disabled, onClick, onDropAsset }) => {
       onClick={onClick}
       onDragEnter={handleDragEnter}
       onDragLeave={handleDragLeave}
+      onDragOver={handleDragOver}
       onDrop={handleDrop}
       style={{ cursor: disabled ? 'not-allowed' : 'pointer' }}
     >
@@ -79,7 +90,7 @@ export const EmptyStateAsset = ({ disabled, onClick, onDropAsset }) => {
       >
         {formatMessage({
           id: getTrad('mediaLibraryInput.placeholder'),
-          defaultMessage: 'Click to select an asset or drag and drop one in this area',
+          defaultMessage: 'Click to add an asset or drag and drop one in this area',
         })}
       </TextAlignTypography>
     </Flex>

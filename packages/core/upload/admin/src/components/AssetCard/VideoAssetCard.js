@@ -1,29 +1,13 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import {
-  Card,
-  CardAction,
-  CardAsset,
-  CardBadge,
-  CardBody,
-  CardCheckbox,
-  CardContent,
-  CardHeader,
-  CardTitle,
-  CardSubtitle,
-  CardTimer,
-} from '@strapi/design-system/Card';
-import { IconButton } from '@strapi/design-system/IconButton';
-import Pencil from '@strapi/icons/Pencil';
-import { useIntl } from 'react-intl';
+import { CardAsset, CardTimer } from '@strapi/design-system/Card';
 import { Box } from '@strapi/design-system/Box';
-import { VideoPreview } from './VideoPreview';
-import { getTrad, formatDuration } from '../../utils';
 
-const Extension = styled.span`
-  text-transform: uppercase;
-`;
+import { VideoPreview } from './VideoPreview';
+import { AssetCardBase } from './AssetCardBase';
+
+import { formatDuration } from '../../utils';
 
 const VideoPreviewWrapper = styled(Box)`
   canvas,
@@ -34,58 +18,27 @@ const VideoPreviewWrapper = styled(Box)`
   }
 `;
 
-export const VideoAssetCard = ({
-  name,
-  extension,
-  url,
-  mime,
-  selected,
-  onSelect,
-  onEdit,
-  size,
-}) => {
-  const { formatMessage } = useIntl();
+export const VideoAssetCard = ({ name, url, mime, size, ...props }) => {
   const [duration, setDuration] = useState();
-  const formattedDuration = duration ? formatDuration(duration) : undefined;
+
+  const formattedDuration = duration && formatDuration(duration);
 
   return (
-    <Card>
-      <CardHeader>
-        {onSelect && <CardCheckbox value={selected} onValueChange={onSelect} />}
-        {onEdit && (
-          <CardAction position="end">
-            <IconButton
-              label={formatMessage({ id: getTrad('control-card.edit'), defaultMessage: 'Edit' })}
-              icon={<Pencil />}
-              onClick={onEdit}
-            />
-          </CardAction>
-        )}
-        <CardAsset size={size}>
-          <VideoPreviewWrapper size={size}>
-            <VideoPreview url={url} mime={mime} onLoadDuration={setDuration} alt={name} />
-          </VideoPreviewWrapper>
-        </CardAsset>
-        <CardTimer>{formattedDuration || '...'}</CardTimer>
-      </CardHeader>
-      <CardBody>
-        <CardContent>
-          <CardTitle as="h2">{name}</CardTitle>
-          <CardSubtitle>
-            <Extension>{extension}</Extension>
-          </CardSubtitle>
-        </CardContent>
-        <CardBadge>
-          {formatMessage({ id: getTrad('settings.section.video.label'), defaultMessage: 'Video' })}
-        </CardBadge>
-      </CardBody>
-    </Card>
+    <AssetCardBase name={name} {...props} variant="Video">
+      <CardAsset size={size}>
+        <VideoPreviewWrapper size={size}>
+          <VideoPreview url={url} mime={mime} onLoadDuration={setDuration} alt={name} />
+        </VideoPreviewWrapper>
+      </CardAsset>
+      <CardTimer>{formattedDuration || '...'}</CardTimer>
+    </AssetCardBase>
   );
 };
 
 VideoAssetCard.defaultProps = {
   onSelect: undefined,
   onEdit: undefined,
+  onRemove: undefined,
   selected: false,
   size: 'M',
 };
@@ -96,6 +49,7 @@ VideoAssetCard.propTypes = {
   name: PropTypes.string.isRequired,
   onSelect: PropTypes.func,
   onEdit: PropTypes.func,
+  onRemove: PropTypes.func,
   url: PropTypes.string.isRequired,
   selected: PropTypes.bool,
   size: PropTypes.oneOf(['S', 'M']),

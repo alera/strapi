@@ -8,14 +8,14 @@ import React from 'react';
 import { render } from '@testing-library/react';
 import { IntlProvider } from 'react-intl';
 import { MemoryRouter } from 'react-router-dom';
+import { lightTheme, darkTheme } from '@strapi/design-system';
 import Theme from '../../../../../components/Theme';
+import ThemeToggleProvider from '../../../../../components/ThemeToggleProvider';
 import { Header } from '../index';
-import components from '../utils/tests/data/compos-schema.json';
-import ct from '../utils/tests/data/ct-schema.json';
+import ct from './data/ct-schema.json';
 
 const defaultProps = {
   allowedActions: { canUpdate: true, canCreate: true, canPublish: true },
-  componentLayouts: components,
   initialData: {},
   isCreatingEntry: true,
   isSingleType: false,
@@ -23,17 +23,24 @@ const defaultProps = {
   layout: ct,
   modifiedData: {},
   onPublish: jest.fn(),
+  onPublishPromptDismissal: jest.fn(),
   onUnpublish: jest.fn(),
   status: 'resolved',
+  publishConfirmation: {
+    show: false,
+    draftCount: 0,
+  },
 };
 
 const makeApp = (props = defaultProps) => {
   return (
     <MemoryRouter>
       <IntlProvider locale="en" defaultLocale="en" messages={{}}>
-        <Theme>
-          <Header {...props} />
-        </Theme>
+        <ThemeToggleProvider themes={{ light: lightTheme, dark: darkTheme }}>
+          <Theme>
+            <Header {...props} />
+          </Theme>
+        </ThemeToggleProvider>
       </IntlProvider>
     </MemoryRouter>
   );
@@ -46,7 +53,7 @@ describe('CONTENT MANAGER | EditView | Header', () => {
     } = render(makeApp());
 
     expect(firstChild).toMatchInlineSnapshot(`
-      .c0 {
+      .c1 {
         background: #f6f6f9;
         padding-top: 24px;
         padding-right: 56px;
@@ -54,11 +61,19 @@ describe('CONTENT MANAGER | EditView | Header', () => {
         padding-left: 56px;
       }
 
-      .c1 {
+      .c2 {
         padding-bottom: 8px;
       }
 
-      .c6 {
+      .c4 {
+        padding-right: 8px;
+      }
+
+      .c8 {
+        -webkit-align-items: center;
+        -webkit-box-align: center;
+        -ms-flex-align: center;
+        align-items: center;
         display: -webkit-box;
         display: -webkit-flex;
         display: -ms-flexbox;
@@ -70,13 +85,13 @@ describe('CONTENT MANAGER | EditView | Header', () => {
         -webkit-justify-content: space-between;
         -ms-flex-pack: justify;
         justify-content: space-between;
+      }
+
+      .c9 {
         -webkit-align-items: center;
         -webkit-box-align: center;
         -ms-flex-align: center;
         align-items: center;
-      }
-
-      .c7 {
         display: -webkit-box;
         display: -webkit-flex;
         display: -ms-flexbox;
@@ -84,33 +99,45 @@ describe('CONTENT MANAGER | EditView | Header', () => {
         -webkit-flex-direction: row;
         -ms-flex-direction: row;
         flex-direction: row;
-        -webkit-align-items: center;
-        -webkit-box-align: center;
-        -ms-flex-align: center;
-        align-items: center;
       }
 
-      .c8 {
-        color: #32324d;
+      .c7 {
+        font-size: 0.875rem;
+        line-height: 1.43;
+        color: #4945ff;
+      }
+
+      .c10 {
         font-weight: 600;
         font-size: 2rem;
         line-height: 1.25;
-      }
-
-      .c15 {
-        color: #666687;
-        font-size: 1rem;
-        line-height: 1.5;
+        color: #32324d;
       }
 
       .c14 {
-        font-weight: 600;
-        color: #32324d;
         font-size: 0.75rem;
         line-height: 1.33;
+        font-weight: 600;
+        line-height: 1.14;
+        color: #32324d;
       }
 
-      .c11 {
+      .c15 {
+        font-size: 1rem;
+        line-height: 1.5;
+        color: #666687;
+      }
+
+      .c11 > * {
+        margin-left: 0;
+        margin-right: 0;
+      }
+
+      .c11 > * + * {
+        margin-left: 8px;
+      }
+
+      .c12 {
         display: -webkit-box;
         display: -webkit-flex;
         display: -ms-flexbox;
@@ -124,21 +151,21 @@ describe('CONTENT MANAGER | EditView | Header', () => {
         outline: none;
       }
 
-      .c11 svg {
+      .c12 svg {
         height: 12px;
         width: 12px;
       }
 
-      .c11 svg > g,
-      .c11 svg path {
+      .c12 svg > g,
+      .c12 svg path {
         fill: #ffffff;
       }
 
-      .c11[aria-disabled='true'] {
+      .c12[aria-disabled='true'] {
         pointer-events: none;
       }
 
-      .c11:after {
+      .c12:after {
         -webkit-transition-property: all;
         transition-property: all;
         -webkit-transition-duration: 0.2s;
@@ -153,11 +180,11 @@ describe('CONTENT MANAGER | EditView | Header', () => {
         border: 2px solid transparent;
       }
 
-      .c11:focus-visible {
+      .c12:focus-visible {
         outline: none;
       }
 
-      .c11:focus-visible:after {
+      .c12:focus-visible:after {
         border-radius: 8px;
         content: '';
         position: absolute;
@@ -168,19 +195,19 @@ describe('CONTENT MANAGER | EditView | Header', () => {
         border: 2px solid #4945ff;
       }
 
-      .c12 {
+      .c13 {
         -webkit-align-items: center;
         -webkit-box-align: center;
         -ms-flex-align: center;
         align-items: center;
-        padding: 8px 16px;
-        background: #4945ff;
-        border: none;
+        background-color: #4945ff;
         border: 1px solid #4945ff;
-        background: #4945ff;
+        height: 2rem;
+        padding-left: 16px;
+        padding-right: 16px;
       }
 
-      .c12 .sc-egiyK {
+      .c13 .c0 {
         display: -webkit-box;
         display: -webkit-flex;
         display: -ms-flexbox;
@@ -191,61 +218,52 @@ describe('CONTENT MANAGER | EditView | Header', () => {
         align-items: center;
       }
 
-      .c12 .c13 {
+      .c13 .c6 {
         color: #ffffff;
       }
 
-      .c12[aria-disabled='true'] {
+      .c13[aria-disabled='true'] {
         border: 1px solid #dcdce4;
         background: #eaeaef;
       }
 
-      .c12[aria-disabled='true'] .c13 {
+      .c13[aria-disabled='true'] .c6 {
         color: #666687;
       }
 
-      .c12[aria-disabled='true'] svg > g,
-      .c12[aria-disabled='true'] svg path {
+      .c13[aria-disabled='true'] svg > g,.c13[aria-disabled='true'] svg path {
         fill: #666687;
       }
 
-      .c12[aria-disabled='true']:active {
+      .c13[aria-disabled='true']:active {
         border: 1px solid #dcdce4;
         background: #eaeaef;
       }
 
-      .c12[aria-disabled='true']:active .c13 {
+      .c13[aria-disabled='true']:active .c6 {
         color: #666687;
       }
 
-      .c12[aria-disabled='true']:active svg > g,
-      .c12[aria-disabled='true']:active svg path {
+      .c13[aria-disabled='true']:active svg > g,.c13[aria-disabled='true']:active svg path {
         fill: #666687;
       }
 
-      .c12:hover {
+      .c13:hover {
         border: 1px solid #7b79ff;
         background: #7b79ff;
       }
 
-      .c12:active {
+      .c13:active {
         border: 1px solid #4945ff;
         background: #4945ff;
       }
 
-      .c5 {
-        color: #4945ff;
-        font-weight: 600;
-        font-size: 0.6875rem;
-        line-height: 1.45;
-        text-transform: uppercase;
+      .c13 svg > g,
+      .c13 svg path {
+        fill: #ffffff;
       }
 
       .c3 {
-        padding-right: 8px;
-      }
-
-      .c2 {
         display: -webkit-inline-box;
         display: -webkit-inline-flex;
         display: -ms-inline-flexbox;
@@ -254,22 +272,21 @@ describe('CONTENT MANAGER | EditView | Header', () => {
         -webkit-box-align: center;
         -ms-flex-align: center;
         align-items: center;
-        text-transform: uppercase;
         -webkit-text-decoration: none;
         text-decoration: none;
         position: relative;
         outline: none;
       }
 
-      .c2 svg path {
+      .c3 svg path {
         fill: #4945ff;
       }
 
-      .c2 svg {
+      .c3 svg {
         font-size: 0.625rem;
       }
 
-      .c2:after {
+      .c3:after {
         -webkit-transition-property: all;
         transition-property: all;
         -webkit-transition-duration: 0.2s;
@@ -284,11 +301,11 @@ describe('CONTENT MANAGER | EditView | Header', () => {
         border: 2px solid transparent;
       }
 
-      .c2:focus-visible {
+      .c3:focus-visible {
         outline: none;
       }
 
-      .c2:focus-visible:after {
+      .c3:focus-visible:after {
         border-radius: 8px;
         content: '';
         position: absolute;
@@ -299,54 +316,31 @@ describe('CONTENT MANAGER | EditView | Header', () => {
         border: 2px solid #4945ff;
       }
 
-      .c4 {
+      .c5 {
         display: -webkit-box;
         display: -webkit-flex;
         display: -ms-flexbox;
         display: flex;
-      }
-
-      .c9 {
-        display: -webkit-box;
-        display: -webkit-flex;
-        display: -ms-flexbox;
-        display: flex;
-        -webkit-flex-direction: row;
-        -ms-flex-direction: row;
-        flex-direction: row;
-        -webkit-align-items: center;
-        -webkit-box-align: center;
-        -ms-flex-align: center;
-        align-items: center;
-      }
-
-      .c10 > * {
-        margin-left: 0;
-        margin-right: 0;
-      }
-
-      .c10 > * + * {
-        margin-left: 8px;
       }
 
       <div
         style="height: 0px;"
       >
         <div
-          class="c0"
+          class="c0 c1"
           data-strapi-header="true"
         >
           <div
-            class="c1"
+            class="c0 c2"
           >
             <a
               aria-current="page"
-              class="c2 active"
+              class="c3 active"
               href="/"
             >
               <span
                 aria-hidden="true"
-                class="c3 c4"
+                class="c0 c4 c5"
               >
                 <svg
                   fill="none"
@@ -362,35 +356,36 @@ describe('CONTENT MANAGER | EditView | Header', () => {
                 </svg>
               </span>
               <span
-                class="c5"
+                class="c6 c7"
               >
                 Back
               </span>
             </a>
           </div>
           <div
-            class="c6"
+            class="c0 c8"
           >
             <div
-              class="c7"
+              class="c0 c9"
             >
               <h1
-                class="c8"
+                class="c6 c10"
               >
                 Create an entry
               </h1>
             </div>
             <div
-              class="c9 c10"
+              class="c0 c9 c11"
+              spacing="2"
             >
               <button
                 aria-disabled="true"
-                class="c11 c12"
+                class="c12 c13"
                 disabled=""
                 type="submit"
               >
                 <span
-                  class="c13 c14"
+                  class="c6 c14"
                 >
                   Save
                 </span>
@@ -398,7 +393,7 @@ describe('CONTENT MANAGER | EditView | Header', () => {
             </div>
           </div>
           <p
-            class="c15"
+            class="c6 c15"
           >
             API ID  : restaurant
           </p>

@@ -19,11 +19,12 @@ const DeleteButton = ({ tokenName, onClickDelete }) => {
         }}
         label={formatMessage(
           {
-            id: 'app.component.table.delete',
+            id: 'global.delete-target',
             defaultMessage: 'Delete {target}',
           },
           { target: `${tokenName}` }
         )}
+        name="delete"
         noBorder
         icon={<Trash />}
       />

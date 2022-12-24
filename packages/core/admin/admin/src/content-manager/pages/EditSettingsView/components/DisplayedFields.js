@@ -12,11 +12,11 @@ import { getTrad } from '../../../utils';
 import RowsLayout from './RowsLayout';
 import LinkToCTB from './LinkToCTB';
 
-const DisplayedFields = ({ editLayout, editLayoutRemainingFields, onRemoveField, onAddField }) => {
+const DisplayedFields = ({ editLayout, fields, onRemoveField, onAddField }) => {
   const { formatMessage } = useIntl();
 
   return (
-    <Stack size={4}>
+    <Stack spacing={4}>
       <Flex justifyContent="space-between">
         <div>
           <Box>
@@ -39,11 +39,9 @@ const DisplayedFields = ({ editLayout, editLayoutRemainingFields, onRemoveField,
         <LinkToCTB />
       </Flex>
       <Box padding={4} hasRadius borderStyle="dashed" borderWidth="1px" borderColor="neutral300">
-        <Stack size={2}>
+        <Stack spacing={2}>
           {editLayout.map((row, index) => (
-            <React.Fragment key={row.rowId}>
-              <RowsLayout row={row} rowIndex={index} onRemoveField={onRemoveField} />
-            </React.Fragment>
+            <RowsLayout key={row.rowId} row={row} rowIndex={index} onRemoveField={onRemoveField} />
           ))}
           <SimpleMenu
             id="label"
@@ -57,9 +55,9 @@ const DisplayedFields = ({ editLayout, editLayoutRemainingFields, onRemoveField,
             startIcon={<Plus />}
             endIcon={null}
             variant="secondary"
-            disabled={editLayoutRemainingFields.length === 0}
+            disabled={fields.length === 0}
           >
-            {editLayoutRemainingFields.map(field => (
+            {fields.map((field) => (
               <MenuItem key={field} onClick={() => onAddField(field)}>
                 {field}
               </MenuItem>
@@ -73,7 +71,7 @@ const DisplayedFields = ({ editLayout, editLayoutRemainingFields, onRemoveField,
 
 DisplayedFields.propTypes = {
   editLayout: PropTypes.array.isRequired,
-  editLayoutRemainingFields: PropTypes.array.isRequired,
+  fields: PropTypes.array.isRequired,
   onAddField: PropTypes.func.isRequired,
   onRemoveField: PropTypes.func.isRequired,
 };

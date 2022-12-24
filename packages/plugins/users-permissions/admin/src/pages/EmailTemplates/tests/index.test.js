@@ -14,9 +14,9 @@ jest.mock('@strapi/helper-plugin', () => ({
   useOverlayBlocker: jest.fn(() => ({ lockApp: jest.fn, unlockApp: jest.fn() })),
   useRBAC: jest.fn(),
   CheckPagePermissions: ({ children }) => children,
-  // useTracking: jest.fn(() => ({
-  //   trackUsage: jest.fn()
-  // }))
+  useTracking: jest.fn(() => ({
+    trackUsage: jest.fn(),
+  })),
 }));
 
 const client = new QueryClient({
@@ -65,6 +65,103 @@ describe('ADMIN | Pages | Settings | Email Templates', () => {
     });
 
     expect(container.firstChild).toMatchInlineSnapshot(`
+      .c16 {
+        border: 0;
+        -webkit-clip: rect(0 0 0 0);
+        clip: rect(0 0 0 0);
+        height: 1px;
+        margin: -1px;
+        overflow: hidden;
+        padding: 0;
+        position: absolute;
+        width: 1px;
+      }
+
+      .c1 {
+        background: #f6f6f9;
+        padding-top: 40px;
+        padding-right: 56px;
+        padding-bottom: 40px;
+        padding-left: 56px;
+      }
+
+      .c5 {
+        padding-right: 56px;
+        padding-left: 56px;
+      }
+
+      .c6 {
+        background: #ffffff;
+        border-radius: 4px;
+        box-shadow: 0px 1px 4px rgba(33,33,52,0.1);
+      }
+
+      .c9 {
+        padding-right: 24px;
+        padding-left: 24px;
+      }
+
+      .c14 {
+        width: 1%;
+      }
+
+      .c20 {
+        color: #666687;
+      }
+
+      .c2 {
+        -webkit-align-items: center;
+        -webkit-box-align: center;
+        -ms-flex-align: center;
+        align-items: center;
+        display: -webkit-box;
+        display: -webkit-flex;
+        display: -ms-flexbox;
+        display: flex;
+        -webkit-flex-direction: row;
+        -ms-flex-direction: row;
+        flex-direction: row;
+        -webkit-box-pack: justify;
+        -webkit-justify-content: space-between;
+        -ms-flex-pack: justify;
+        justify-content: space-between;
+      }
+
+      .c3 {
+        -webkit-align-items: center;
+        -webkit-box-align: center;
+        -ms-flex-align: center;
+        align-items: center;
+        display: -webkit-box;
+        display: -webkit-flex;
+        display: -ms-flexbox;
+        display: flex;
+        -webkit-flex-direction: row;
+        -ms-flex-direction: row;
+        flex-direction: row;
+      }
+
+      .c4 {
+        font-weight: 600;
+        font-size: 2rem;
+        line-height: 1.25;
+        color: #32324d;
+      }
+
+      .c18 {
+        font-weight: 600;
+        font-size: 0.6875rem;
+        line-height: 1.45;
+        text-transform: uppercase;
+        color: #666687;
+      }
+
+      .c22 {
+        font-size: 0.875rem;
+        line-height: 1.43;
+        color: #32324d;
+      }
+
       .c23 {
         display: -webkit-box;
         display: -webkit-flex;
@@ -123,6 +220,88 @@ describe('ADMIN | Pages | Settings | Email Templates', () => {
         border: 2px solid #4945ff;
       }
 
+      .c7 {
+        overflow: hidden;
+        border: 1px solid #eaeaef;
+      }
+
+      .c11 {
+        width: 100%;
+        white-space: nowrap;
+      }
+
+      .c8 {
+        position: relative;
+      }
+
+      .c8:before {
+        background: linear-gradient(90deg,#c0c0cf 0%,rgba(0,0,0,0) 100%);
+        opacity: 0.2;
+        position: absolute;
+        height: 100%;
+        box-shadow: 0px 1px 4px rgba(33,33,52,0.1);
+        width: 8px;
+        left: 0;
+      }
+
+      .c8:after {
+        background: linear-gradient(270deg,#c0c0cf 0%,rgba(0,0,0,0) 100%);
+        opacity: 0.2;
+        position: absolute;
+        height: 100%;
+        box-shadow: 0px 1px 4px rgba(33,33,52,0.1);
+        width: 8px;
+        right: 0;
+        top: 0;
+      }
+
+      .c10 {
+        overflow-x: auto;
+      }
+
+      .c19 tr:last-of-type {
+        border-bottom: none;
+      }
+
+      .c12 {
+        border-bottom: 1px solid #eaeaef;
+      }
+
+      .c13 {
+        border-bottom: 1px solid #eaeaef;
+      }
+
+      .c13 td,
+      .c13 th {
+        padding: 16px;
+      }
+
+      .c13 td:first-of-type,
+      .c13 th:first-of-type {
+        padding: 0 4px;
+      }
+
+      .c13 th {
+        padding-top: 0;
+        padding-bottom: 0;
+        height: 3.5rem;
+      }
+
+      .c15 {
+        vertical-align: middle;
+        text-align: left;
+        color: #666687;
+        outline-offset: -4px;
+      }
+
+      .c15 input {
+        vertical-align: sub;
+      }
+
+      .c17 svg {
+        height: 0.25rem;
+      }
+
       .c24 {
         display: -webkit-box;
         display: -webkit-flex;
@@ -164,202 +343,12 @@ describe('ADMIN | Pages | Settings | Email Templates', () => {
         fill: #666687;
       }
 
-      .c7 {
-        background: #ffffff;
-        border-radius: 4px;
-        box-shadow: 0px 1px 4px rgba(33,33,52,0.1);
-      }
-
-      .c10 {
-        padding-right: 24px;
-        padding-left: 24px;
-      }
-
-      .c15 {
-        width: 1%;
-      }
-
-      .c8 {
-        overflow: hidden;
-      }
-
-      .c12 {
-        width: 100%;
-        white-space: nowrap;
-      }
-
-      .c9 {
-        position: relative;
-      }
-
-      .c9:before {
-        background: linear-gradient(90deg,#c0c0cf 0%,rgba(0,0,0,0) 100%);
-        opacity: 0.2;
-        position: absolute;
-        height: 100%;
-        box-shadow: 0px 1px 4px rgba(33,33,52,0.1);
-        width: 8px;
-        left: 0;
-      }
-
-      .c9:after {
-        background: linear-gradient(270deg,#c0c0cf 0%,rgba(0,0,0,0) 100%);
-        opacity: 0.2;
-        position: absolute;
-        height: 100%;
-        box-shadow: 0px 1px 4px rgba(33,33,52,0.1);
-        width: 8px;
-        right: 0;
-        top: 0;
-      }
-
-      .c11 {
-        overflow-x: auto;
-      }
-
-      .c21 tr:last-of-type {
-        border-bottom: none;
-      }
-
-      .c13 {
-        border-bottom: 1px solid #eaeaef;
-      }
-
-      .c14 {
-        border-bottom: 1px solid #eaeaef;
-      }
-
-      .c14 td,
-      .c14 th {
-        padding: 16px;
-      }
-
-      .c14 td:first-of-type,
-      .c14 th:first-of-type {
-        padding: 0 4px;
-      }
-
-      .c14 th {
-        padding-top: 0;
-        padding-bottom: 0;
-        height: 3.5rem;
-      }
-
-      .c17 {
-        display: -webkit-box;
-        display: -webkit-flex;
-        display: -ms-flexbox;
-        display: flex;
-        -webkit-flex-direction: row;
-        -ms-flex-direction: row;
-        flex-direction: row;
-        -webkit-align-items: center;
-        -webkit-box-align: center;
-        -ms-flex-align: center;
-        align-items: center;
-      }
-
-      .c16 {
-        vertical-align: middle;
-        text-align: left;
-        color: #666687;
-        outline-offset: -4px;
-      }
-
-      .c16 input {
-        vertical-align: sub;
-      }
-
-      .c19 svg {
-        height: 0.25rem;
-      }
-
-      .c20 {
-        color: #666687;
-        font-weight: 600;
-        font-size: 0.6875rem;
-        line-height: 1.45;
-        text-transform: uppercase;
-      }
-
-      .c22 {
-        color: #32324d;
-        font-size: 0.875rem;
-        line-height: 1.43;
-      }
-
-      .c18 {
-        border: 0;
-        -webkit-clip: rect(0 0 0 0);
-        clip: rect(0 0 0 0);
-        height: 1px;
-        margin: -1px;
-        overflow: hidden;
-        padding: 0;
-        position: absolute;
-        width: 1px;
+      .c21 path {
+        fill: #666687;
       }
 
       .c0:focus-visible {
         outline: none;
-      }
-
-      .c1 {
-        background: #f6f6f9;
-        padding-top: 40px;
-        padding-right: 56px;
-        padding-bottom: 40px;
-        padding-left: 56px;
-      }
-
-      .c6 {
-        padding-right: 56px;
-        padding-left: 56px;
-      }
-
-      .c2 {
-        display: -webkit-box;
-        display: -webkit-flex;
-        display: -ms-flexbox;
-        display: flex;
-        -webkit-flex-direction: row;
-        -ms-flex-direction: row;
-        flex-direction: row;
-        -webkit-box-pack: justify;
-        -webkit-justify-content: space-between;
-        -ms-flex-pack: justify;
-        justify-content: space-between;
-        -webkit-align-items: center;
-        -webkit-box-align: center;
-        -ms-flex-align: center;
-        align-items: center;
-      }
-
-      .c3 {
-        display: -webkit-box;
-        display: -webkit-flex;
-        display: -ms-flexbox;
-        display: flex;
-        -webkit-flex-direction: row;
-        -ms-flex-direction: row;
-        flex-direction: row;
-        -webkit-align-items: center;
-        -webkit-box-align: center;
-        -ms-flex-align: center;
-        align-items: center;
-      }
-
-      .c4 {
-        color: #32324d;
-        font-weight: 600;
-        font-size: 2rem;
-        line-height: 1.25;
-      }
-
-      .c5 {
-        color: #666687;
-        font-size: 1rem;
-        line-height: 1.5;
       }
 
       <main
@@ -389,125 +378,132 @@ describe('ADMIN | Pages | Settings | Email Templates', () => {
                 </h1>
               </div>
             </div>
-            <p
-              class="c5"
-            />
           </div>
         </div>
         <div
-          class="c6"
+          class="c5"
         >
           <div
-            class="c7 c8"
+            class="c6 c7"
           >
             <div
-              class="c9"
+              class="c8"
             >
               <div
-                class="c10 c11"
+                class="c9 c10"
               >
                 <table
                   aria-colcount="3"
                   aria-rowcount="3"
-                  class="c12"
+                  class="c11"
+                  role="grid"
                 >
                   <thead
-                    class="c13"
+                    class="c12"
                   >
                     <tr
                       aria-rowindex="1"
-                      class="c14"
+                      class="c13"
                     >
                       <th
                         aria-colindex="1"
-                        class="c15 c16"
+                        class="c14 c15"
+                        role="gridcell"
                         tabindex="0"
                         width="1%"
                       >
                         <div
-                          class="c17"
+                          class="c3"
                         >
                           <div
-                            class="c18"
+                            class="c16"
                           >
                             icon
                           </div>
                           <span
-                            class="c19"
+                            class="c17"
                           />
                         </div>
                       </th>
                       <th
                         aria-colindex="2"
-                        class="c16"
+                        class="c15"
+                        role="gridcell"
                         tabindex="-1"
                       >
                         <div
-                          class="c17"
+                          class="c3"
                         >
                           <span
-                            class="c20"
+                            class="c18"
                           >
                             name
                           </span>
                           <span
-                            class="c19"
+                            class="c17"
                           />
                         </div>
                       </th>
                       <th
                         aria-colindex="3"
-                        class="c15 c16"
+                        class="c14 c15"
+                        role="gridcell"
                         tabindex="-1"
                         width="1%"
                       >
                         <div
-                          class="c17"
+                          class="c3"
                         >
                           <div
-                            class="c18"
+                            class="c16"
                           >
                             action
                           </div>
                           <span
-                            class="c19"
+                            class="c17"
                           />
                         </div>
                       </th>
                     </tr>
                   </thead>
                   <tbody
-                    class="c21"
+                    class="c19"
                   >
                     <tr
                       aria-rowindex="2"
-                      class="c14"
+                      class="c13"
                       style="cursor: pointer;"
                     >
                       <td
                         aria-colindex="1"
-                        class="c16"
+                        class="c15"
+                        role="gridcell"
                         tabindex="-1"
                       >
-                        <svg
-                          aria-label="Reset password"
-                          fill="none"
-                          height="1em"
-                          viewBox="0 0 24 24"
-                          width="1em"
-                          xmlns="http://www.w3.org/2000/svg"
+                        <div
+                          class="c20 c21"
                         >
-                          <path
-                            clip-rule="evenodd"
-                            d="M15.681 2.804A9.64 9.64 0 0011.818 2C6.398 2 2 6.48 2 12c0 5.521 4.397 10 9.818 10 2.03 0 4.011-.641 5.67-1.835a9.987 9.987 0 003.589-4.831 1.117 1.117 0 00-.664-1.418 1.086 1.086 0 00-1.393.676 7.769 7.769 0 01-2.792 3.758 7.546 7.546 0 01-4.41 1.428V4.222h.002a7.492 7.492 0 013.003.625 7.61 7.61 0 012.5 1.762l.464.551-2.986 3.042a.186.186 0 00.129.316H22V3.317a.188.188 0 00-.112-.172.179.179 0 00-.199.04l-2.355 2.4-.394-.468-.02-.02a9.791 9.791 0 00-3.239-2.293zm-3.863 1.418V2v2.222zm0 0v15.556c-4.216 0-7.636-3.484-7.636-7.778s3.42-7.777 7.636-7.778z"
-                            fill="#212134"
-                            fill-rule="evenodd"
-                          />
-                        </svg>
+                          <svg
+                            aria-label="Reset password"
+                            fill="none"
+                            height="1em"
+                            viewBox="0 0 24 24"
+                            width="1em"
+                            xmlns="http://www.w3.org/2000/svg"
+                          >
+                            <path
+                              clip-rule="evenodd"
+                              d="M15.681 2.804A9.64 9.64 0 0011.818 2C6.398 2 2 6.48 2 12c0 5.521 4.397 10 9.818 10 2.03 0 4.011-.641 5.67-1.835a9.987 9.987 0 003.589-4.831 1.117 1.117 0 00-.664-1.418 1.086 1.086 0 00-1.393.676 7.769 7.769 0 01-2.792 3.758 7.546 7.546 0 01-4.41 1.428V4.222h.002a7.492 7.492 0 013.003.625 7.61 7.61 0 012.5 1.762l.464.551-2.986 3.042a.186.186 0 00.129.316H22V3.317a.188.188 0 00-.112-.172.179.179 0 00-.199.04l-2.355 2.4-.394-.468-.02-.02a9.791 9.791 0 00-3.239-2.293zm-3.863 1.418V2v2.222zm0 0v15.556c-4.216 0-7.636-3.484-7.636-7.778s3.42-7.777 7.636-7.778z"
+                              fill="#212134"
+                              fill-rule="evenodd"
+                            />
+                          </svg>
+                        </div>
                       </td>
                       <td
                         aria-colindex="2"
-                        class="c16"
+                        class="c15"
+                        role="gridcell"
                         tabindex="-1"
                       >
                         <span
@@ -519,7 +515,7 @@ describe('ADMIN | Pages | Settings | Email Templates', () => {
                       <td
                         aria-colindex="3"
                         aria-hidden="true"
-                        class="c16"
+                        class="c15"
                         role="button"
                       >
                         <span>
@@ -530,8 +526,15 @@ describe('ADMIN | Pages | Settings | Email Templates', () => {
                             tabindex="-1"
                             type="button"
                           >
+                            <span
+                              class="c16"
+                            >
+                              Edit a template
+                            </span>
                             <svg
+                              aria-hidden="true"
                               fill="none"
+                              focusable="false"
                               height="1em"
                               viewBox="0 0 24 24"
                               width="1em"
@@ -539,7 +542,7 @@ describe('ADMIN | Pages | Settings | Email Templates', () => {
                             >
                               <path
                                 clip-rule="evenodd"
-                                d="M23.605 3.514c.527.528.527 1.36 0 1.887l-2.623 2.607-4.99-4.99L18.6.396a1.322 1.322 0 011.887 0l3.119 3.118zM0 24v-4.989l14.2-14.2L19.19 9.8 4.99 24H0z"
+                                d="M23.604 3.514c.528.528.528 1.36 0 1.887l-2.622 2.607-4.99-4.99L18.6.396a1.322 1.322 0 011.887 0l3.118 3.118zM0 24v-4.99l14.2-14.2 4.99 4.99L4.99 24H0z"
                                 fill="#212134"
                                 fill-rule="evenodd"
                               />
@@ -550,31 +553,37 @@ describe('ADMIN | Pages | Settings | Email Templates', () => {
                     </tr>
                     <tr
                       aria-rowindex="3"
-                      class="c14"
+                      class="c13"
                       style="cursor: pointer;"
                     >
                       <td
                         aria-colindex="1"
-                        class="c16"
+                        class="c15"
+                        role="gridcell"
                         tabindex="-1"
                       >
-                        <svg
-                          aria-label="Email address confirmation"
-                          fill="none"
-                          height="1em"
-                          viewBox="0 0 24 24"
-                          width="1em"
-                          xmlns="http://www.w3.org/2000/svg"
+                        <div
+                          class="c20 c21"
                         >
-                          <path
-                            d="M20.727 2.97a.2.2 0 01.286 0l2.85 2.89a.2.2 0 010 .28L9.554 20.854a.2.2 0 01-.285 0l-9.13-9.243a.2.2 0 010-.281l2.85-2.892a.2.2 0 01.284 0l6.14 6.209L20.726 2.97z"
-                            fill="#212134"
-                          />
-                        </svg>
+                          <svg
+                            aria-label="Email address confirmation"
+                            fill="none"
+                            height="1em"
+                            viewBox="0 0 24 24"
+                            width="1em"
+                            xmlns="http://www.w3.org/2000/svg"
+                          >
+                            <path
+                              d="M20.727 2.97a.2.2 0 01.286 0l2.85 2.89a.2.2 0 010 .28L9.554 20.854a.2.2 0 01-.285 0l-9.13-9.243a.2.2 0 010-.281l2.85-2.892a.2.2 0 01.284 0l6.14 6.209L20.726 2.97z"
+                              fill="#212134"
+                            />
+                          </svg>
+                        </div>
                       </td>
                       <td
                         aria-colindex="2"
-                        class="c16"
+                        class="c15"
+                        role="gridcell"
                         tabindex="-1"
                       >
                         <span
@@ -586,7 +595,7 @@ describe('ADMIN | Pages | Settings | Email Templates', () => {
                       <td
                         aria-colindex="3"
                         aria-hidden="true"
-                        class="c16"
+                        class="c15"
                         role="button"
                       >
                         <span>
@@ -597,8 +606,15 @@ describe('ADMIN | Pages | Settings | Email Templates', () => {
                             tabindex="-1"
                             type="button"
                           >
+                            <span
+                              class="c16"
+                            >
+                              Edit a template
+                            </span>
                             <svg
+                              aria-hidden="true"
                               fill="none"
+                              focusable="false"
                               height="1em"
                               viewBox="0 0 24 24"
                               width="1em"
@@ -606,7 +622,7 @@ describe('ADMIN | Pages | Settings | Email Templates', () => {
                             >
                               <path
                                 clip-rule="evenodd"
-                                d="M23.605 3.514c.527.528.527 1.36 0 1.887l-2.623 2.607-4.99-4.99L18.6.396a1.322 1.322 0 011.887 0l3.119 3.118zM0 24v-4.989l14.2-14.2L19.19 9.8 4.99 24H0z"
+                                d="M23.604 3.514c.528.528.528 1.36 0 1.887l-2.622 2.607-4.99-4.99L18.6.396a1.322 1.322 0 011.887 0l3.118 3.118zM0 24v-4.99l14.2-14.2 4.99 4.99L4.99 24H0z"
                                 fill="#212134"
                                 fill-rule="evenodd"
                               />

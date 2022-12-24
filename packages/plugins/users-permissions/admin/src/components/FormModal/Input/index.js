@@ -24,16 +24,16 @@ const Input = ({
 }) => {
   const { formatMessage } = useIntl();
   const inputValue =
-    name === 'noName' ? `${strapi.backendURL}/connect/${providerToEditName}/callback` : value;
+    name === 'noName' ? `${strapi.backendURL}/api/connect/${providerToEditName}/callback` : value;
 
   const label = formatMessage(
     { id: intlLabel.id, defaultMessage: intlLabel.defaultMessage },
-    { ...intlLabel.values }
+    { provider: providerToEditName, ...intlLabel.values }
   );
   const hint = description
     ? formatMessage(
         { id: description.id, defaultMessage: description.defaultMessage },
-        { ...description.values }
+        { provider: providerToEditName, ...description.values }
       )
     : '';
 
@@ -54,7 +54,7 @@ const Input = ({
           id: 'app.components.ToggleCheckbox.on-label',
           defaultMessage: 'On',
         })}
-        onChange={e => {
+        onChange={(e) => {
           onChange({ target: { name, value: e.target.checked } });
         }}
       />

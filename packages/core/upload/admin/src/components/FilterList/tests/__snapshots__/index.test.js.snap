@@ -17,13 +17,6 @@ exports[`<FilterList /> renders and matches the snapshot 1`] = `
   padding: 4px;
 }
 
-.c4 {
-  font-weight: 600;
-  color: #32324d;
-  font-size: 0.75rem;
-  line-height: 1.33;
-}
-
 .c1 {
   background: #f0f0ff;
   color: #4945ff;
@@ -40,7 +33,18 @@ exports[`<FilterList /> renders and matches the snapshot 1`] = `
   padding-left: 8px;
 }
 
+.c4 {
+  font-size: 0.75rem;
+  line-height: 1.33;
+  font-weight: 600;
+  color: #32324d;
+}
+
 .c3 {
+  -webkit-align-items: center;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
   display: -webkit-box;
   display: -webkit-flex;
   display: -ms-flexbox;
@@ -48,10 +52,6 @@ exports[`<FilterList /> renders and matches the snapshot 1`] = `
   -webkit-flex-direction: row;
   -ms-flex-direction: row;
   flex-direction: row;
-  -webkit-align-items: center;
-  -webkit-box-align: center;
-  -ms-flex-align: center;
-  align-items: center;
 }
 
 .c2 svg {
@@ -65,6 +65,7 @@ exports[`<FilterList /> renders and matches the snapshot 1`] = `
 
 .c5 {
   border-right: 1px solid #d9d8ff;
+  color: inherit;
   padding-right: 8px;
 }
 

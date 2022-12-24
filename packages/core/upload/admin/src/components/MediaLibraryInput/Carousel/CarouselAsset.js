@@ -6,7 +6,8 @@ import { Box } from '@strapi/design-system/Box';
 import { Flex } from '@strapi/design-system/Flex';
 import { AssetType, AssetDefinition } from '../../../constants';
 import { VideoPreview } from '../../AssetCard/VideoPreview';
-import { createAssetUrl } from '../../../utils/createAssetUrl';
+import { AudioPreview } from '../../AssetCard/AudioPreview';
+import { createAssetUrl } from '../../../utils';
 
 const DocAsset = styled(Flex)`
   background: linear-gradient(180deg, #ffffff 0%, #f6f6f9 121.48%);
@@ -20,6 +21,13 @@ const VideoPreviewWrapper = styled(Box)`
   }
 `;
 
+const AudioPreviewWrapper = styled(Box)`
+  canvas,
+  audio {
+    max-width: 100%;
+  }
+`;
+
 export const CarouselAsset = ({ asset }) => {
   if (asset.mime.includes(AssetType.Video)) {
     return (
@@ -30,6 +38,14 @@ export const CarouselAsset = ({ asset }) => {
           alt={asset.alternativeText || asset.name}
         />
       </VideoPreviewWrapper>
+    );
+  }
+
+  if (asset.mime.includes(AssetType.Audio)) {
+    return (
+      <AudioPreviewWrapper>
+        <AudioPreview url={createAssetUrl(asset, true)} alt={asset.alternativeText || asset.name} />
+      </AudioPreviewWrapper>
     );
   }
 

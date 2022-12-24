@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { useIntl } from 'react-intl';
-import { get } from 'lodash';
 import {
   getYupInnerErrors,
   CheckPagePermissions,
@@ -53,7 +52,7 @@ const SettingsPage = () => {
     setIsLoading(true);
 
     fetchEmailSettings()
-      .then(config => {
+      .then((config) => {
         notifyStatus(
           formatMessage({
             id: getTrad('Settings.email.plugin.notification.data.loaded'),
@@ -63,7 +62,7 @@ const SettingsPage = () => {
 
         setConfig(config);
 
-        const testAddressFound = get(config, 'settings.testAddress');
+        const testAddressFound = config?.settings?.testAddress;
 
         if (testAddressFound) {
           setTestAddress(testAddressFound);
@@ -95,11 +94,11 @@ const SettingsPage = () => {
       .catch(() => setIsTestAddressValid(false));
   }, [testAddress]);
 
-  const handleChange = e => {
+  const handleChange = (e) => {
     setTestAddress(() => e.target.value);
   };
 
-  const handleSubmit = async event => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
 
     try {
@@ -158,7 +157,7 @@ const SettingsPage = () => {
       <EmailHeader />
       <ContentLayout>
         <form onSubmit={handleSubmit}>
-          <Stack size={7}>
+          <Stack spacing={7}>
             <Box
               background="neutral0"
               hasRadius
@@ -179,7 +178,7 @@ const SettingsPage = () => {
               paddingLeft={7}
               paddingRight={7}
             >
-              <Stack size={4}>
+              <Stack spacing={4}>
                 <Typography variant="delta" as="h2">
                   {formatMessage({
                     id: getTrad('Settings.email.plugin.title.test'),
@@ -205,7 +204,7 @@ const SettingsPage = () => {
                         })
                       }
                       placeholder={formatMessage({
-                        id: 'Settings.email.plugin.placeholder.testAddress',
+                        id: getTrad('Settings.email.plugin.placeholder.testAddress'),
                         defaultMessage: 'ex: developer@example.com',
                       })}
                     />
@@ -217,7 +216,10 @@ const SettingsPage = () => {
                       type="submit"
                       startIcon={<Envelop />}
                     >
-                      Send test email
+                      {formatMessage({
+                        id: getTrad('Settings.email.plugin.button.test-email'),
+                        defaultMessage: 'Send test email',
+                      })}
                     </Button>
                   </GridItem>
                 </Grid>

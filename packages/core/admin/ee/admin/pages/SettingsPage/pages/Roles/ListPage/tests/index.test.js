@@ -9,10 +9,12 @@ import { render, screen } from '@testing-library/react';
 import { createMemoryHistory } from 'history';
 import { Router } from 'react-router-dom';
 import { IntlProvider } from 'react-intl';
-import { useRBAC } from '@strapi/helper-plugin';
+import { useRBAC, TrackingProvider } from '@strapi/helper-plugin';
+import { lightTheme, darkTheme } from '@strapi/design-system';
 import { useRolesList } from '../../../../../../../../admin/src/hooks';
 
 import Theme from '../../../../../../../../admin/src/components/Theme';
+import ThemeToggleProvider from '../../../../../../../../admin/src/components/ThemeToggleProvider';
 import ListPage from '../index';
 
 jest.mock('@strapi/helper-plugin', () => ({
@@ -29,13 +31,17 @@ jest.mock('../../../../../../../../admin/src/hooks', () => ({
   useRolesList: jest.fn(),
 }));
 
-const makeApp = history => (
+const makeApp = (history) => (
   <IntlProvider messages={{}} textComponent="span" locale="en">
-    <Theme>
-      <Router history={history}>
-        <ListPage />
-      </Router>
-    </Theme>
+    <TrackingProvider>
+      <ThemeToggleProvider themes={{ light: lightTheme, dark: darkTheme }}>
+        <Theme>
+          <Router history={history}>
+            <ListPage />
+          </Router>
+        </Theme>
+      </ThemeToggleProvider>
+    </TrackingProvider>
   </IntlProvider>
 );
 
@@ -54,24 +60,6 @@ describe('<ListPage />', () => {
     } = render(App);
 
     expect(firstChild).toMatchInlineSnapshot(`
-      .c1 {
-        display: -webkit-box;
-        display: -webkit-flex;
-        display: -ms-flexbox;
-        display: flex;
-        -webkit-flex-direction: row;
-        -ms-flex-direction: row;
-        flex-direction: row;
-        -webkit-box-pack: space-around;
-        -webkit-justify-content: space-around;
-        -ms-flex-pack: space-around;
-        justify-content: space-around;
-        -webkit-align-items: center;
-        -webkit-box-align: center;
-        -ms-flex-align: center;
-        align-items: center;
-      }
-
       .c3 {
         border: 0;
         -webkit-clip: rect(0 0 0 0);
@@ -87,6 +75,25 @@ describe('<ListPage />', () => {
       .c4 {
         -webkit-animation: gzYjWD 1s infinite linear;
         animation: gzYjWD 1s infinite linear;
+        will-change: transform;
+      }
+
+      .c1 {
+        -webkit-align-items: center;
+        -webkit-box-align: center;
+        -ms-flex-align: center;
+        align-items: center;
+        display: -webkit-box;
+        display: -webkit-flex;
+        display: -ms-flexbox;
+        display: flex;
+        -webkit-flex-direction: row;
+        -ms-flex-direction: row;
+        flex-direction: row;
+        -webkit-box-pack: space-around;
+        -webkit-justify-content: space-around;
+        -ms-flex-pack: space-around;
+        justify-content: space-around;
       }
 
       .c2 {

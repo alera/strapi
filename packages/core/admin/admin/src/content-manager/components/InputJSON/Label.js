@@ -1,18 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import styled from 'styled-components';
 import { useIntl } from 'react-intl';
-import { Typography } from '@strapi/design-system/Typography';
-import { Box } from '@strapi/design-system/Box';
-import { Flex } from '@strapi/design-system/Flex';
+import { FieldLabel } from '@strapi/design-system/Field';
 
-const LabelAction = styled(Box)`
-  svg path {
-    fill: ${({ theme }) => theme.colors.neutral500};
-  }
-`;
-
-const Label = ({ id, intlLabel, labelAction, name }) => {
+const Label = ({ intlLabel, labelAction, name }) => {
   const { formatMessage } = useIntl();
   const label = intlLabel?.id
     ? formatMessage(
@@ -21,20 +12,7 @@ const Label = ({ id, intlLabel, labelAction, name }) => {
       )
     : name;
 
-  return (
-    <Flex>
-      <Typography
-        textColor="neutral800"
-        htmlFor={id || name}
-        variant="pi"
-        fontWeight="bold"
-        as="label"
-      >
-        {label}
-      </Typography>
-      {labelAction && <LabelAction paddingLeft={1}>{labelAction}</LabelAction>}
-    </Flex>
-  );
+  return <FieldLabel action={labelAction}>{label}</FieldLabel>;
 };
 
 Label.defaultProps = {

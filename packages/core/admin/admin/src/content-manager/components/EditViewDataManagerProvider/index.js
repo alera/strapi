@@ -1,19 +1,34 @@
+/* eslint-disable react/jsx-no-constructed-context-values */
 import React, { useCallback, useEffect, useMemo, useRef, useReducer } from 'react';
-import { cloneDeep, get, isEmpty, isEqual, set } from 'lodash';
+import isEmpty from 'lodash/isEmpty';
+import cloneDeep from 'lodash/cloneDeep';
+import get from 'lodash/get';
+import isEqual from 'lodash/isEqual';
+import set from 'lodash/set';
 import PropTypes from 'prop-types';
 import { useIntl } from 'react-intl';
 import { Prompt, Redirect } from 'react-router-dom';
-import { Main } from '@strapi/design-system/Main';
+import { useDispatch, useSelector } from 'react-redux';
+
+import { Main } from '@strapi/design-system';
 import {
   LoadingIndicatorPage,
   ContentManagerEditViewDataManagerContext,
   useNotification,
   useOverlayBlocker,
   useTracking,
+  getYupInnerErrors,
+  getAPIInnerErrors,
 } from '@strapi/helper-plugin';
+
 import { getTrad, removeKeyInObject } from '../../utils';
+
+import selectCrudReducer from '../../sharedReducers/crudReducer/selectors';
+
 import reducer, { initialState } from './reducer';
-import { cleanData, createYupSchema, getYupInnerErrors } from './utils';
+import { cleanData, createYupSchema, recursivelyFindPathsBasedOnCondition } from './utils';
+import { clearSetModifiedDataOnly } from '../../sharedReducers/crudReducer/actions';
+import { usePrev } from '../../hooks';
 
 const EditViewDataManagerProvider = ({
   allLayoutData,
@@ -29,6 +44,7 @@ const EditViewDataManagerProvider = ({
   isSingleType,
   onPost,
   onPublish,
+  onDraftRelationCheck,
   onPut,
   onUnpublish,
   readActionAllowedFields,
@@ -38,8 +54,23 @@ const EditViewDataManagerProvider = ({
   status,
   updateActionAllowedFields,
 }) => {
+  /**
+   * TODO: this should be moved into the global reducer
+   * to match ever other reducer in the CM.
+   */
   const [reducerState, dispatch] = useReducer(reducer, initialState);
-  const { formErrors, initialData, modifiedData, modifiedDZName, shouldCheckErrors } = reducerState;
+  const {
+    formErrors,
+    initialData,
+    modifiedData,
+    modifiedDZName,
+    shouldCheckErrors,
+    publishConfirmation,
+  } = reducerState;
+
+  const { setModifiedDataOnly } = useSelector(selectCrudReducer);
+  const reduxDispatch = useDispatch();
+
   const toggleNotification = useNotification();
   const { lockApp, unlockApp } = useOverlayBlocker();
 
@@ -121,53 +152,124 @@ const EditViewDataManagerProvider = ({
     });
   }, [componentsDataStructure, contentTypeDataStructure]);
 
+  const { components } = allLayoutData;
+
+  const previousInitialValues = usePrev(initialValues);
+
   useEffect(() => {
-    if (initialValues) {
+    /**
+     * Only fire this effect if the initialValues are different
+     * otherwise it's a fruitless effort no matter what happens.
+     */
+    if (
+      initialValues &&
+      currentContentTypeLayout?.attributes &&
+      !isEqual(previousInitialValues, initialValues)
+    ) {
+      /**
+       * This will return an array of paths:
+       * ['many_to_one', 'one_to_many', 'one_to_one']
+       * it can also return a path to a relation:
+       * ['relation_component.categories']
+       */
+      const relationalFieldPaths = recursivelyFindPathsBasedOnCondition(
+        components,
+        (value) => value.type === 'relation'
+      )(currentContentTypeLayout.attributes);
+
+      const componentPaths = recursivelyFindPathsBasedOnCondition(
+        components,
+        (value) => value.type === 'component' && !value.repeatable
+      )(currentContentTypeLayout.attributes);
+
+      const repeatableComponentPaths = recursivelyFindPathsBasedOnCondition(
+        components,
+        (value) => value.type === 'component' && value.repeatable
+      )(currentContentTypeLayout.attributes);
+
+      const dynamicZonePaths = recursivelyFindPathsBasedOnCondition(
+        components,
+        (value) => value.type === 'dynamiczone'
+      )(currentContentTypeLayout.attributes);
+
       dispatch({
         type: 'INIT_FORM',
         initialValues,
+        relationalFieldPaths,
+        componentPaths,
+        repeatableComponentPaths,
+        dynamicZonePaths,
+        setModifiedDataOnly,
       });
+
+      /**
+       * TODO: This should be moved to a side-effect e.g. thunks
+       * something to consider for V5
+       */
+      if (setModifiedDataOnly) {
+        reduxDispatch(clearSetModifiedDataOnly());
+      }
     }
-  }, [initialValues]);
+  }, [
+    initialValues,
+    currentContentTypeLayout,
+    components,
+    setModifiedDataOnly,
+    reduxDispatch,
+    previousInitialValues,
+  ]);
 
-  const addComponentToDynamicZone = useCallback((keys, componentUid, shouldCheckErrors = false) => {
-    trackUsageRef.current('didAddComponentToDynamicZone');
+  const dispatchAddComponent = useCallback(
+    (type) =>
+      (keys, componentLayoutData, components, shouldCheckErrors = false) => {
+        trackUsageRef.current('didAddComponentToDynamicZone');
 
+        dispatch({
+          type,
+          keys: keys.split('.'),
+          componentLayoutData,
+          allComponents: components,
+          shouldCheckErrors,
+        });
+      },
+    []
+  );
+
+  const addComponentToDynamicZone = dispatchAddComponent('ADD_COMPONENT_TO_DYNAMIC_ZONE');
+
+  const addNonRepeatableComponentToField = useCallback(
+    (keys, componentLayoutData, allComponents) => {
+      dispatch({
+        type: 'ADD_NON_REPEATABLE_COMPONENT_TO_FIELD',
+        keys: keys.split('.'),
+        componentLayoutData,
+        allComponents,
+      });
+    },
+    []
+  );
+
+  /**
+   * @type {({ name: string, value: Relation, toOneRelation: boolean}) => void}
+   */
+  const connectRelation = useCallback(({ name, value, toOneRelation }) => {
     dispatch({
-      type: 'ADD_COMPONENT_TO_DYNAMIC_ZONE',
-      keys: keys.split('.'),
-      componentUid,
-      shouldCheckErrors,
+      type: 'CONNECT_RELATION',
+      keys: name.split('.'),
+      value,
+      toOneRelation,
     });
   }, []);
 
-  const addNonRepeatableComponentToField = useCallback((keys, componentUid) => {
+  const loadRelation = useCallback(({ target: { name, value } }) => {
     dispatch({
-      type: 'ADD_NON_REPEATABLE_COMPONENT_TO_FIELD',
-      keys: keys.split('.'),
-      componentUid,
-    });
-  }, []);
-
-  const addRelation = useCallback(({ target: { name, value } }) => {
-    dispatch({
-      type: 'ADD_RELATION',
+      type: 'LOAD_RELATION',
       keys: name.split('.'),
       value,
     });
   }, []);
 
-  const addRepeatableComponentToField = useCallback(
-    (keys, componentUid, shouldCheckErrors = false) => {
-      dispatch({
-        type: 'ADD_REPEATABLE_COMPONENT_TO_FIELD',
-        keys: keys.split('.'),
-        componentUid,
-        shouldCheckErrors,
-      });
-    },
-    []
-  );
+  const addRepeatableComponentToField = dispatchAddComponent('ADD_REPEATABLE_COMPONENT_TO_FIELD');
 
   const yupSchema = useMemo(() => {
     const options = { isCreatingEntry, isDraft: shouldNotRunValidations, isFromComponent: false };
@@ -226,9 +328,14 @@ const EditViewDataManagerProvider = ({
     ({ target: { name, value, type } }, shouldSetInitialValue = false) => {
       let inputValue = value;
 
-      // Empty string is not a valid date,
-      // Set the date to null when it's empty
-      if (type === 'date' && value === '') {
+      // Allow to reset text, textarea, email, uid, select/enum, and number
+      if (
+        ['text', 'textarea', 'string', 'email', 'uid', 'select', 'select-one', 'number'].includes(
+          type
+        ) &&
+        !value &&
+        value !== 0
+      ) {
         inputValue = null;
       }
 
@@ -239,16 +346,6 @@ const EditViewDataManagerProvider = ({
         });
 
         return;
-      }
-
-      // Allow to reset enum
-      if (type === 'select-one' && value === '') {
-        inputValue = null;
-      }
-
-      // Allow to reset number input
-      if (type === 'number' && value === '') {
-        inputValue = null;
       }
 
       dispatch({
@@ -262,12 +359,12 @@ const EditViewDataManagerProvider = ({
   );
 
   const createFormData = useCallback(
-    data => {
+    (modifiedData, initialData) => {
       // First we need to remove the added keys needed for the dnd
-      const preparedData = removeKeyInObject(cloneDeep(data), '__temp_key__');
+      const preparedData = removeKeyInObject(cloneDeep(modifiedData), '__temp_key__');
       // Then we need to apply our helper
       const cleanedData = cleanData(
-        preparedData,
+        { browserState: preparedData, serverState: initialData },
         currentContentTypeLayout,
         allLayoutData.components
       );
@@ -285,35 +382,40 @@ const EditViewDataManagerProvider = ({
     return shouldNotRunValidations ? { status: 'draft' } : {};
   }, [hasDraftAndPublish, shouldNotRunValidations]);
 
+  const handlePublishPromptDismissal = useCallback(async (e) => {
+    e.preventDefault();
+
+    return dispatch({
+      type: 'RESET_PUBLISH_CONFIRMATION',
+    });
+  }, []);
+
   const handleSubmit = useCallback(
-    async e => {
+    async (e) => {
       e.preventDefault();
       let errors = {};
 
-      // First validate the form
       try {
         await yupSchema.validate(modifiedData, { abortEarly: false });
+      } catch (err) {
+        errors = getYupInnerErrors(err);
+      }
 
-        const formData = createFormData(modifiedData);
+      try {
+        if (isEmpty(errors)) {
+          const formData = createFormData(modifiedData, initialData);
 
-        if (isCreatingEntry) {
-          onPost(formData, trackerProperty);
-        } else {
-          onPut(formData, trackerProperty);
+          if (isCreatingEntry) {
+            await onPost(formData, trackerProperty);
+          } else {
+            await onPut(formData, trackerProperty);
+          }
         }
       } catch (err) {
-        console.log('ValidationError');
-        console.log(err);
-
-        errors = getYupInnerErrors(err);
-
-        toggleNotification({
-          type: 'warning',
-          message: {
-            id: getTrad('containers.EditView.notification.errors'),
-            defaultMessage: 'The form contains some errors',
-          },
-        });
+        errors = {
+          ...errors,
+          ...getAPIInnerErrors(err, { getTrad }),
+        };
       }
 
       dispatch({
@@ -325,9 +427,9 @@ const EditViewDataManagerProvider = ({
       createFormData,
       isCreatingEntry,
       modifiedData,
+      initialData,
       onPost,
       onPut,
-      toggleNotification,
       trackerProperty,
       yupSchema,
     ]
@@ -342,29 +444,61 @@ const EditViewDataManagerProvider = ({
       },
       { isCreatingEntry, isDraft: false, isFromComponent: false }
     );
+
+    const draftCount = await onDraftRelationCheck();
+
+    if (!publishConfirmation.show && draftCount > 0) {
+      // If the warning hasn't already been shown and draft relations are found,
+      // abort the publish call and ask for confirmation from the user
+      dispatch({
+        type: 'SET_PUBLISH_CONFIRMATION',
+        publishConfirmation: {
+          show: true,
+          draftCount,
+        },
+      });
+
+      return;
+    }
+    dispatch({
+      type: 'RESET_PUBLISH_CONFIRMATION',
+    });
+
     let errors = {};
+    try {
+      await schema.validate(modifiedData, { abortEarly: false });
+    } catch (err) {
+      errors = getYupInnerErrors(err);
+    }
 
     try {
-      // Validate the form using yup
-      await schema.validate(modifiedData, { abortEarly: false });
-
-      onPublish();
+      if (isEmpty(errors)) {
+        await onPublish();
+      }
     } catch (err) {
-      console.error('ValidationError');
-      console.error(err);
-
-      errors = getYupInnerErrors(err);
+      errors = {
+        ...errors,
+        ...getAPIInnerErrors(err, { getTrad }),
+      };
     }
 
     dispatch({
       type: 'SET_FORM_ERRORS',
       errors,
     });
-  }, [allLayoutData, currentContentTypeLayout, isCreatingEntry, modifiedData, onPublish]);
+  }, [
+    allLayoutData,
+    currentContentTypeLayout,
+    isCreatingEntry,
+    modifiedData,
+    publishConfirmation.show,
+    onPublish,
+    onDraftRelationCheck,
+  ]);
 
   const shouldCheckDZErrors = useCallback(
-    dzName => {
-      const doesDZHaveError = Object.keys(formErrors).some(key => key.split('.')[0] === dzName);
+    (dzName) => {
+      const doesDZHaveError = Object.keys(formErrors).some((key) => key.split('.')[0] === dzName);
       const shouldCheckErrors = !isEmpty(formErrors) && doesDZHaveError;
 
       return shouldCheckErrors;
@@ -409,19 +543,11 @@ const EditViewDataManagerProvider = ({
     });
   }, []);
 
-  const moveRelation = useCallback((dragIndex, overIndex, name) => {
+  const disconnectRelation = useCallback(({ name, id }) => {
     dispatch({
-      type: 'MOVE_FIELD',
-      dragIndex,
-      overIndex,
+      type: 'DISCONNECT_RELATION',
       keys: name.split('.'),
-    });
-  }, []);
-
-  const onRemoveRelation = useCallback(keys => {
-    dispatch({
-      type: 'REMOVE_RELATION',
-      keys,
+      id,
     });
   }, []);
 
@@ -475,7 +601,7 @@ const EditViewDataManagerProvider = ({
       value={{
         addComponentToDynamicZone,
         addNonRepeatableComponentToField,
-        addRelation,
+        connectRelation,
         addRepeatableComponentToField,
         allLayoutData,
         checkFormErrors,
@@ -488,15 +614,15 @@ const EditViewDataManagerProvider = ({
         shouldNotRunValidations,
         status,
         layout: currentContentTypeLayout,
+        loadRelation,
         modifiedData,
         moveComponentDown,
         moveComponentField,
         moveComponentUp,
-        moveRelation,
         onChange: handleChange,
         onPublish: handlePublish,
         onUnpublish,
-        onRemoveRelation,
+        disconnectRelation,
         readActionAllowedFields,
         redirectToPreviousPage,
         removeComponentFromDynamicZone,
@@ -505,25 +631,25 @@ const EditViewDataManagerProvider = ({
         slug,
         triggerFormValidation,
         updateActionAllowedFields,
+        onPublishPromptDismissal: handlePublishPromptDismissal,
+        publishConfirmation,
       }}
     >
-      <>
-        {isLoadingForData || (!isCreatingEntry && !initialData.id) ? (
-          <Main aria-busy="true">
-            <LoadingIndicatorPage />
-          </Main>
-        ) : (
-          <>
-            <Prompt
-              when={!isEqual(modifiedData, initialData)}
-              message={formatMessage({ id: 'global.prompt.unsaved' })}
-            />
-            <form noValidate onSubmit={handleSubmit}>
-              {children}
-            </form>
-          </>
-        )}
-      </>
+      {isLoadingForData || (!isCreatingEntry && !initialData.id) ? (
+        <Main aria-busy="true">
+          <LoadingIndicatorPage />
+        </Main>
+      ) : (
+        <>
+          <Prompt
+            when={!isEqual(modifiedData, initialData)}
+            message={formatMessage({ id: 'global.prompt.unsaved' })}
+          />
+          <form noValidate onSubmit={handleSubmit}>
+            {children}
+          </form>
+        </>
+      )}
     </ContentManagerEditViewDataManagerContext.Provider>
   );
 };
@@ -531,7 +657,7 @@ const EditViewDataManagerProvider = ({
 EditViewDataManagerProvider.defaultProps = {
   from: '/',
   initialValues: null,
-  redirectToPreviousPage: () => {},
+  redirectToPreviousPage() {},
 };
 
 EditViewDataManagerProvider.propTypes = {
@@ -548,6 +674,7 @@ EditViewDataManagerProvider.propTypes = {
   isSingleType: PropTypes.bool.isRequired,
   onPost: PropTypes.func.isRequired,
   onPublish: PropTypes.func.isRequired,
+  onDraftRelationCheck: PropTypes.func.isRequired,
   onPut: PropTypes.func.isRequired,
   onUnpublish: PropTypes.func.isRequired,
   readActionAllowedFields: PropTypes.array.isRequired,

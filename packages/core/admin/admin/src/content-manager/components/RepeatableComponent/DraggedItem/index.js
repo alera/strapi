@@ -21,6 +21,7 @@ import Preview from './Preview';
 import DraggingSibling from './DraggingSibling';
 import { CustomIconButton } from './IconButtonCustoms';
 import { connect, select } from './utils';
+import useLazyComponents from '../../../hooks/useLazyComponents';
 
 const DragButton = styled.span`
   display: flex;
@@ -44,6 +45,7 @@ const DragButton = styled.span`
 
 const DraggedItem = ({
   componentFieldName,
+  componentUid,
   // Errors are retrieved from the AccordionGroupCustom cloneElement
   hasErrorMessage,
   hasErrors,
@@ -81,14 +83,8 @@ const DraggedItem = ({
       const dragPath = item.originalPath;
       const hoverPath = componentFieldName;
       const fullPathToComponentArray = dragPath.split('.');
-      const dragIndexString = fullPathToComponentArray
-        .slice()
-        .splice(-1)
-        .join('');
-      const hoverIndexString = hoverPath
-        .split('.')
-        .splice(-1)
-        .join('');
+      const dragIndexString = fullPathToComponentArray.slice().splice(-1).join('');
+      const hoverIndexString = hoverPath.split('.').splice(-1).join('');
       const pathToComponentArray = fullPathToComponentArray.slice(
         0,
         fullPathToComponentArray.length - 1
@@ -121,6 +117,10 @@ const DraggedItem = ({
       if (dragIndex > hoverIndex && hoverClientY > hoverMiddleY) {
         return;
       }
+      // If They are not in the same level, should not move
+      if (dragPath.split('.').length !== hoverPath.split('.').length) {
+        return;
+      }
       // Time to actually perform the action in the data
       moveComponentField(pathToComponentArray, dragIndex, hoverIndex);
 
@@ -129,7 +129,7 @@ const DraggedItem = ({
   });
   const [{ isDragging }, drag, preview] = useDrag({
     type: ItemTypes.COMPONENT,
-    item: () => {
+    item() {
       // Close all collapses
       toggleCollapses(-1);
 
@@ -138,12 +138,12 @@ const DraggedItem = ({
         originalPath: componentFieldName,
       };
     },
-    end: () => {
+    end() {
       // Update the errors
       triggerFormValidation();
       setIsDraggingSibling(false);
     },
-    collect: monitor => ({
+    collect: (monitor) => ({
       isDragging: monitor.isDragging(),
     }),
   });
@@ -163,7 +163,7 @@ const DraggedItem = ({
   // anymore, this hack forces a rerender in order to apply the dragRef
   useEffect(() => {
     if (!isDraggingSibling) {
-      forceRerenderAfterDnd(prev => !prev);
+      forceRerenderAfterDnd((prev) => !prev);
     }
   }, [isDraggingSibling]);
 
@@ -178,6 +178,8 @@ const DraggedItem = ({
   const accordionTitle = toString(displayedValue);
   const accordionHasError = hasErrors ? 'error' : undefined;
 
+  const { lazyComponentStore } = useLazyComponents();
+
   return (
     <Box ref={refs ? refs.dropRef : null}>
       {isDragging && <Preview />}
@@ -190,14 +192,14 @@ const DraggedItem = ({
           error={accordionHasError}
           hasErrorMessage={hasErrorMessage}
           expanded={isOpen}
-          toggle={onClickToggle}
+          onToggle={onClickToggle}
           id={componentFieldName}
           size="S"
         >
           <AccordionToggle
             action={
               isReadOnly ? null : (
-                <Stack horizontal size={0}>
+                <Stack horizontal spacing={0}>
                   <CustomIconButton
                     expanded={isOpen}
                     noBorder
@@ -222,7 +224,7 @@ const DraggedItem = ({
                       role="button"
                       tabIndex={-1}
                       ref={refs.dragRef}
-                      onClick={e => e.stopPropagation()}
+                      onClick={(e) => e.stopPropagation()}
                     >
                       <Drag />
                     </DragButton>
@@ -234,7 +236,7 @@ const DraggedItem = ({
             togglePosition="left"
           />
           <AccordionContent>
-            <Stack background="neutral100" padding={6} size={6}>
+            <Stack background="neutral100" padding={6} spacing={6}>
               {fields.map((fieldRow, key) => {
                 return (
                   <Grid gap={4} key={key}>
@@ -267,11 +269,14 @@ const DraggedItem = ({
                       return (
                         <GridItem key={keys} col={size} s={12} xs={12}>
                           <Inputs
+                            componentUid={componentUid}
                             fieldSchema={fieldSchema}
                             keys={keys}
                             metadatas={metadatas}
                             // onBlur={hasErrors ? checkFormErrors : null}
                             queryInfos={queryInfos}
+                            size={size}
+                            customFieldInputs={lazyComponentStore}
                           />
                         </GridItem>
                       );
@@ -288,14 +293,16 @@ const DraggedItem = ({
 };
 
 DraggedItem.defaultProps = {
+  componentUid: undefined,
   isDraggingSibling: false,
   isOpen: false,
-  setIsDraggingSibling: () => {},
-  toggleCollapses: () => {},
+  setIsDraggingSibling() {},
+  toggleCollapses() {},
 };
 
 DraggedItem.propTypes = {
   componentFieldName: PropTypes.string.isRequired,
+  componentUid: PropTypes.string,
   hasErrorMessage: PropTypes.bool.isRequired,
   hasErrors: PropTypes.bool.isRequired,
   isDraggingSibling: PropTypes.bool,
@@ -314,9 +321,6 @@ DraggedItem.propTypes = {
 
 const Memoized = memo(DraggedItem);
 
-export default connect(
-  Memoized,
-  select
-);
+export default connect(Memoized, select);
 
 export { DraggedItem };

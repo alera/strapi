@@ -34,27 +34,32 @@ const ModalForm = ({ queryName, onToggle }) => {
   const { formatMessage } = useIntl();
   const toggleNotification = useNotification();
   const { lockApp, unlockApp } = useOverlayBlocker();
-  const postMutation = useMutation(body => axiosInstance.post('/admin/users', body), {
-    onSuccess: async ({ data }) => {
-      setRegistrationToken(data.data.registrationToken);
-      await queryClient.invalidateQueries(queryName);
-      goNext();
-      setIsSubmitting(false);
+  const postMutation = useMutation(
+    (body) => {
+      return axiosInstance.post('/admin/users', body);
     },
-    onError: err => {
-      setIsSubmitting(false);
+    {
+      async onSuccess({ data }) {
+        setRegistrationToken(data.data.registrationToken);
+        await queryClient.invalidateQueries(queryName);
+        goNext();
+        setIsSubmitting(false);
+      },
+      onError(err) {
+        setIsSubmitting(false);
 
-      toggleNotification({
-        type: 'warning',
-        message: { id: 'notification.error', defaultMessage: 'An error occured' },
-      });
+        toggleNotification({
+          type: 'warning',
+          message: { id: 'notification.error', defaultMessage: 'An error occured' },
+        });
 
-      throw err;
-    },
-    onSettled: () => {
-      unlockApp();
-    },
-  });
+        throw err;
+      },
+      onSettled() {
+        unlockApp();
+      },
+    }
+  );
 
   const headerTitle = formatMessage({
     id: 'Settings.permissions.users.create',
@@ -69,8 +74,8 @@ const ModalForm = ({ queryName, onToggle }) => {
     } catch (err) {
       unlockApp();
 
-      if (err?.response?.data.message === 'Email already taken') {
-        setErrors({ email: err.response.data.message });
+      if (err?.response?.data?.error.message === 'Email already taken') {
+        setErrors({ email: err.response.data.error.message });
       }
     }
   };
@@ -112,7 +117,7 @@ const ModalForm = ({ queryName, onToggle }) => {
           return (
             <Form>
               <ModalBody>
-                <Stack size={6}>
+                <Stack spacing={6}>
                   {currentStep !== 'create' && <MagicLink registrationToken={registrationToken} />}
                   <Box>
                     <Typography variant="beta" as="h2">
@@ -122,10 +127,10 @@ const ModalForm = ({ queryName, onToggle }) => {
                       })}
                     </Typography>
                     <Box paddingTop={4}>
-                      <Stack size={1}>
+                      <Stack spacing={1}>
                         <Grid gap={5}>
-                          {layout.map(row => {
-                            return row.map(input => {
+                          {layout.map((row) => {
+                            return row.map((input) => {
                               return (
                                 <GridItem key={input.name} {...input.size}>
                                   <GenericInput
@@ -146,7 +151,7 @@ const ModalForm = ({ queryName, onToggle }) => {
                   <Box>
                     <Typography variant="beta" as="h2">
                       {formatMessage({
-                        id: 'app.components.Users.ModalCreateBody.block-title.login',
+                        id: 'global.roles',
                         defaultMessage: "User's role",
                       })}
                     </Typography>
@@ -160,8 +165,8 @@ const ModalForm = ({ queryName, onToggle }) => {
                             value={values.roles}
                           />
                         </GridItem>
-                        {roleSettingsForm.map(row => {
-                          return row.map(input => {
+                        {roleSettingsForm.map((row) => {
+                          return row.map((input) => {
                             return (
                               <GridItem key={input.name} {...input.size}>
                                 <GenericInput
